@@ -56,11 +56,62 @@
       align-items: center;
       padding-left: 20px;
       color: var(--ink);
-      transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
     }
-    .logo:hover { transform: rotate(90deg); }
+    .logo svg { width: 22px; height: 22px; display: block; }
 
-    .logo svg { width: 22px; height: 22px; }
+    /* ---------- Ladybug hanging from the logo (draggable pendulum) ---------- */
+    .pendulum {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .pendulum svg.thread {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .pendulum .thread line {
+      stroke: #111;
+      stroke-width: 1.2;
+      stroke-linecap: round;
+    }
+    .bob {
+      position: absolute;
+      left: 0; top: 0;
+      width: 46px;
+      height: 46px;
+      margin: -23px 0 0 -23px;
+      transform-origin: 50% 50%;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      cursor: grab;
+      pointer-events: auto;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      will-change: transform;
+    }
+    .bob.dragging { cursor: grabbing; }
+    .bob svg { width: 40px; height: 40px; display: block; }
+    .bob .hint {
+      position: absolute;
+      left: calc(100% + 6px);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      transition: opacity 0.6s ease;
+    }
+    .bob.used .hint { opacity: 0; }
 
     nav { display: flex; gap: 20px; padding-right: 20px; }
 
@@ -240,7 +291,6 @@
     /* ---------- Mobile ---------- */
     @media (max-width: 809px) {
       header { padding: 20px 20px 0; }
-      .logo { padding-left: 0; }
       nav { padding-right: 0; gap: 28px; }
       nav .hl { display: none; }
       nav .icon { display: inline-block; }
@@ -254,7 +304,7 @@
       .unit .n { font-size: 40px; }
       h1 { font-size: clamp(40px, 13.5vw, 64px); }
 
-      .marquee { top: 46vh; bottom: 70px; }
+      .marquee { top: 46vh; bottom: 96px; }
       .track { top: 50%; }
       .card { margin-right: 60px; }
 
@@ -262,7 +312,10 @@
         flex-direction: column-reverse;
         gap: 10px;
         text-align: center;
+        font-size: 12px;
       }
+      .contact { flex-wrap: wrap; justify-content: center; }
+      .card { --ymul: 0.55; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -274,7 +327,7 @@
   <div class="site">
 
     <header>
-      <a class="logo" href="/" aria-label="GHL MegaMinds home">
+      <a class="logo" id="logo" href="/" aria-label="GHL MegaMinds home">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <g stroke="currentColor" stroke-width="3" stroke-linecap="round">
             <path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9 4.9 19.1"/>
@@ -291,6 +344,39 @@
         <a class="icon" href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M13.5 21v-7h2.3l.4-2.8h-2.7V9.7c0-.8.3-1.4 1.4-1.4h1.4V5.8c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.6v1.9H8.4V14h2.3v7"/></svg></a>
       </nav>
     </header>
+
+    <!-- Hanging logo -->
+    <div class="pendulum" aria-hidden="true">
+      <svg class="thread"><line id="thread" x1="0" y1="0" x2="0" y2="0"/></svg>
+      <div class="bob" id="bob">
+        <svg viewBox="0 0 48 48">
+          <!-- legs -->
+          <g stroke="#111" stroke-width="1.6" stroke-linecap="round" fill="none">
+            <path d="M14 22 7 18M13 27 5 27M15 32 8 37M34 22l7-4M35 27h8M33 32l7 5"/>
+          </g>
+          <!-- head -->
+          <circle cx="24" cy="15" r="7" fill="#111"/>
+          <circle cx="21" cy="13.5" r="1.4" fill="#fff"/>
+          <circle cx="27" cy="13.5" r="1.4" fill="#fff"/>
+          <!-- antennae -->
+          <path d="M20 9c-2-3-4-4-6-4M28 9c2-3 4-4 6-4" stroke="#111" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+          <!-- body -->
+          <ellipse cx="24" cy="29" rx="13" ry="13.5" fill="#e63b2e"/>
+          <path d="M24 16v27" stroke="#111" stroke-width="1.6"/>
+          <ellipse cx="24" cy="29" rx="13" ry="13.5" fill="none" stroke="#111" stroke-width="1.6"/>
+          <!-- spots -->
+          <circle cx="17.5" cy="24" r="2.4" fill="#111"/>
+          <circle cx="30.5" cy="24" r="2.4" fill="#111"/>
+          <circle cx="16" cy="32" r="2" fill="#111"/>
+          <circle cx="32" cy="32" r="2" fill="#111"/>
+          <circle cx="20.5" cy="37.5" r="1.6" fill="#111"/>
+          <circle cx="27.5" cy="37.5" r="1.6" fill="#111"/>
+          <!-- highlight -->
+          <ellipse cx="19" cy="21" rx="2.5" ry="1.4" fill="#fff" opacity=".45" transform="rotate(-30 19 21)"/>
+        </svg>
+        <span class="hint">Drag</span>
+      </div>
+    </div>
 
     <!-- Scrolling artwork -->
     <div class="marquee" aria-hidden="true">
@@ -398,7 +484,8 @@
       const vw = innerWidth, center = vw / 2;
       for (const c of cards) {
         const s = parseFloat(getComputedStyle(c).getPropertyValue("--s")) || 1;
-        const y = getComputedStyle(c).getPropertyValue("--y") || "0px";
+        const cs = getComputedStyle(c);
+        const y = (parseFloat(cs.getPropertyValue("--y")) || 0) * (parseFloat(cs.getPropertyValue("--ymul")) || 1) + "px";
         const cx = c.offsetLeft - offset + c.offsetWidth / 2;
         if (cx < -400 || cx > vw + 400) { c.style.visibility = "hidden"; continue; }
         c.style.visibility = "visible";
@@ -408,6 +495,83 @@
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
+
+    // ---- Hanging logo: elastic pendulum you can drag ----
+    (function () {
+      const bob = document.getElementById("bob");
+      const thread = document.getElementById("thread");
+      const hintUsed = () => bob.classList.add("used");
+
+      const logo = document.getElementById("logo");
+      let pivotX = 0, pivotY = 0, restLen = 0;
+      const rest = () => {
+        const r = logo.getBoundingClientRect();
+        pivotX = r.left + r.width / 2;
+        pivotY = r.bottom - 2;
+        restLen = innerWidth < 810 ? 84 : 120;
+      };
+      rest(); addEventListener("resize", rest);
+
+      // state (y is measured from the pivot)
+      let x = pivotX, y = restLen, vx = 0, vy = 0;
+      let dragging = false, px = 0, py = 0, pvx = 0, pvy = 0, pt = 0;
+      const G = 2400, DAMP = 0.995, AIR = 0.999;
+      let last = performance.now(), t = 0;
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function step(now) {
+        const dt = Math.min(0.032, (now - last) / 1000); last = now; t += dt;
+        if (!dragging) {
+          // gravity + a whisper of ambient breeze so it never sits perfectly still
+          const ax = reduce ? 0 : Math.sin(t * 0.9) * 14 + Math.sin(t * 2.3) * 5;
+          vx = (vx + ax * dt) * AIR; vy = (vy + G * dt) * AIR;
+          x += vx * dt; y += vy * dt;
+          // thread: a string, not a rod — constrains only when taut
+          const dx = x - pivotX, dy = y;
+          const len = Math.hypot(dx, dy) || 1;
+          if (len > restLen) {
+            const nx = dx / len, ny = dy / len;
+            x = pivotX + nx * restLen; y = ny * restLen;
+            const vr = vx * nx + vy * ny;          // radial (outward) velocity
+            if (vr > 0) { vx -= vr * nx; vy -= vr * ny; }
+            vx *= DAMP; vy *= DAMP;
+          }
+        }
+        const ang = Math.atan2(x - pivotX, y) * -180 / Math.PI;
+        bob.style.transform = `translate(${x}px, ${pivotY + y}px) rotate(${ang}deg)`;
+        thread.setAttribute("x1", pivotX); thread.setAttribute("y1", pivotY);
+        thread.setAttribute("x2", x - 8 * Math.sin(ang * Math.PI / 180));
+        thread.setAttribute("y2", pivotY + y - 16 * Math.cos(ang * Math.PI / 180));
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+
+      bob.addEventListener("pointerdown", e => {
+        dragging = true; bob.classList.add("dragging"); hintUsed();
+        bob.setPointerCapture(e.pointerId);
+        px = e.clientX; py = e.clientY; pt = performance.now(); pvx = pvy = 0;
+        e.preventDefault();
+      });
+      bob.addEventListener("pointermove", e => {
+        if (!dragging) return;
+        const now = performance.now(), dt = Math.max(1, now - pt) / 1000;
+        pvx = (e.clientX - px) / dt; pvy = (e.clientY - py) / dt;
+        px = e.clientX; py = e.clientY; pt = now;
+        // keep it on a leash so the thread can't be pulled absurdly far
+        let dx = e.clientX - pivotX, dy = e.clientY - pivotY;
+        const len = Math.hypot(dx, dy), max = restLen * 1.9;
+        if (len > max) { dx *= max / len; dy *= max / len; }
+        x = pivotX + dx; y = dy;
+      });
+      const release = () => {
+        if (!dragging) return;
+        dragging = false; bob.classList.remove("dragging");
+        vx = Math.max(-1600, Math.min(1600, pvx)); vy = Math.max(-1600, Math.min(1600, pvy));
+      };
+      bob.addEventListener("pointerup", release);
+      bob.addEventListener("pointercancel", release);
+      bob.addEventListener("lostpointercapture", release);
+    })();
   </script>
 </body>
 </html>
