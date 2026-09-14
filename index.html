@@ -227,7 +227,7 @@
       flex: 0 0 170px;
       width: 170px;
       height: 210px;
-      margin-right: 130px;
+      margin-right: 190px;
       border-radius: 8px;
       overflow: hidden;
       transform-style: preserve-3d;
@@ -244,12 +244,9 @@
 
     /* per-card scale & vertical offset (echoes the original's varied layout) */
     .card[data-s="1"]  { --s: 1.40; --y: -150px; }
-    .card[data-s="2"]  { --s: 0.90; --y:   40px; }
-    .card[data-s="3"]  { --s: 1.33; --y:  -30px; }
-    .card[data-s="4"]  { --s: 1.16; --y:  -90px; }
-    .card[data-s="5"]  { --s: 0.83; --y:  135px; }
-    .card[data-s="6"]  { --s: 1.27; --y:  195px; }
-    .card[data-s="7"]  { --s: 0.90; --y:   60px; }
+    .card[data-s="2"]  { --s: 1.33; --y:  -30px; }
+    .card[data-s="3"]  { --s: 1.16; --y:  -90px; }
+    .card[data-s="4"]  { --s: 1.27; --y:  195px; }
 
     /* ---------- Footer ---------- */
     footer {
@@ -288,7 +285,7 @@
 
       .marquee { top: 46vh; bottom: 96px; }
       .track { top: 50%; }
-      .card { margin-right: 60px; }
+      .card { margin-right: 90px; }
 
       footer { font-size: 12px; }
       .card { --ymul: 0.55; }
@@ -347,29 +344,17 @@
         <div class="card" data-s="1">
           <svg viewBox="0 0 170 210"><rect width="170" height="210" fill="#e9e2d5"/><circle cx="92" cy="72" r="46" fill="#f0703a"/><circle cx="106" cy="60" r="18" fill="#f6a24f" opacity=".85"/><g fill="none" stroke="#1f2a44" stroke-width="3"><path d="M-10 140c30-25 60-25 90 0s60 25 90 0"/><path d="M-10 156c30-25 60-25 90 0s60 25 90 0"/><path d="M-10 172c30-25 60-25 90 0s60 25 90 0"/><path d="M-10 188c30-25 60-25 90 0s60 25 90 0"/><path d="M-10 204c30-25 60-25 90 0s60 25 90 0"/></g><path d="M0 130c40 10 80 10 170 0v80H0z" fill="#e9e2d5" opacity=".0"/></svg>
         </div>
-        <!-- 2: window on ochre wall -->
+        <!-- 2: bird over red -->
         <div class="card" data-s="2">
-          <svg viewBox="0 0 170 210"><rect width="170" height="210" fill="#e08c3d"/><rect width="170" height="210" fill="url(#g2)"/><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3a453"/><stop offset="1" stop-color="#c8722a"/></linearGradient></defs><rect x="58" y="62" width="54" height="72" fill="#2a1d14"/><rect x="52" y="56" width="66" height="6" fill="#f4c383"/><rect x="52" y="134" width="66" height="7" fill="#b25f22"/><rect x="60" y="141" width="58" height="10" fill="#8f4a1a" opacity=".6"/></svg>
-        </div>
-        <!-- 3: bird over red -->
-        <div class="card" data-s="3">
           <svg viewBox="0 0 170 210"><rect width="170" height="210" fill="#c43f1e"/><path d="M40 92c14-8 24-8 36-2 8-16 22-30 42-34-8 10-12 22-14 34 12 2 22 6 30 12-14-2-28 0-40 4-6 8-14 12-24 12-8 0-16-4-22-10-6 0-8-8-8-16z" fill="#f6efe4"/><path d="M28 98h12M118 108h20" stroke="#f6efe4" stroke-width="2" stroke-linecap="round"/><g fill="#f6efe4" opacity=".55"><path d="M42 146c14 6 24 6 36 2 8 14 22 26 42 30-8-8-12-20-14-30 12-2 22-6 30-12-14 2-28 0-40-4-6-8-14-12-24-12-8 0-16 4-22 10-6 0-8 8-8 16z"/></g><g stroke="#c43f1e" stroke-width="3"><path d="M20 150h130M20 162h130M20 174h130M20 186h130"/></g></svg>
         </div>
-        <!-- 4: terracotta arches -->
-        <div class="card" data-s="4">
+        <!-- 3: terracotta arches -->
+        <div class="card" data-s="3">
           <svg viewBox="0 0 170 210"><rect width="170" height="210" fill="#b8391c"/><path d="M0 0h170v210H0z" fill="url(#g4)"/><defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d9502a"/><stop offset="1" stop-color="#9f2f14"/></linearGradient></defs><path d="M30 210V90a55 55 0 0 1 110 0v120z" fill="#e4623a"/><path d="M52 210V100a33 33 0 0 1 66 0v110z" fill="#5f8f8f"/><g fill="#2a1a12" opacity=".35"><rect x="52" y="150" width="66" height="8"/><rect x="52" y="166" width="66" height="8"/><rect x="52" y="182" width="66" height="8"/><rect x="52" y="198" width="66" height="8"/></g></svg>
         </div>
-        <!-- 5: door & diagonal shadow -->
-        <div class="card" data-s="5">
-          <svg viewBox="0 0 170 210"><rect width="170" height="210" fill="#e2833a"/><path d="M0 0h170v210L0 60z" fill="#f1a24f"/><rect x="66" y="96" width="40" height="114" fill="#2a1d14"/><rect x="66" y="96" width="40" height="114" fill="url(#g5)"/><defs><linearGradient id="g5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b2818"/><stop offset="1" stop-color="#1b120b"/></linearGradient></defs><path d="M80 210v-38c0-6 6-6 6 0v38z" fill="#c8722a" opacity=".5"/></svg>
-        </div>
-        <!-- 6: stripe & square -->
-        <div class="card" data-s="6">
+        <!-- 4: stripe & square -->
+        <div class="card" data-s="4">
           <svg viewBox="0 0 170 210"><rect width="170" height="210" fill="#efe7da"/><rect x="72" y="0" width="26" height="210" fill="#6f9696"/><rect x="72" y="0" width="8" height="210" fill="#587c7c"/><rect x="24" y="118" width="60" height="60" fill="#e8552b"/><rect x="24" y="118" width="60" height="60" fill="none" stroke="#c8451f" stroke-width="2"/><circle cx="128" cy="52" r="16" fill="#f0703a"/></svg>
-        </div>
-        <!-- 7: sunset gradient -->
-        <div class="card" data-s="7">
-          <svg viewBox="0 0 170 210"><defs><linearGradient id="g7" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7b267"/><stop offset=".55" stop-color="#f0703a"/><stop offset="1" stop-color="#9f2f14"/></linearGradient></defs><rect width="170" height="210" fill="url(#g7)"/><circle cx="85" cy="118" r="30" fill="#ffd79a"/><rect x="0" y="118" width="170" height="92" fill="#3a1a10"/><path d="M0 118c30 8 60 8 85 0s55-8 85 0v14H0z" fill="#52251a"/></svg>
         </div>
       </div>
     </div>
@@ -418,7 +403,7 @@
     const track = $("track");
     const originals = Array.from(track.children);
     // clone until we have enough to cover any viewport twice
-    const needed = Math.ceil((window.innerWidth * 2) / (originals.length * 300)) + 1;
+    const needed = Math.ceil((window.innerWidth * 2) / (originals.length * 360)) + 1;
     for (let i = 0; i < needed; i++) originals.forEach(c => track.appendChild(c.cloneNode(true)));
     const cards = Array.from(track.children);
 
