@@ -101,7 +101,11 @@
       will-change: transform;
     }
     .bob.dragging { cursor: grabbing; }
-    .bob svg { width: 40px; height: 40px; display: block; }
+    .bob svg {
+      width: 40px; height: 40px; display: block;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .bob.dragging svg { transform: scale(1.7); }
     .bob .hint {
       position: absolute;
       left: calc(100% + 6px);
@@ -469,7 +473,9 @@
 
       // state (y is measured down from the pivot)
       let x = pivotX, y = 0, vx = 0, vy = 0;
-      let dragging = false, px = 0, py = 0, pvx = 0, pvy = 0, pt = 0;
+      let curLen = 0;                 // current silk length; reels back to restLen after a long drag
+      let dragging = false;
+      const trail = [];               // recent pointer samples for release velocity
       const G = 2400, DAMP = 0.995, AIR = 0.999;
       let last = performance.now(), t = 0;
 
@@ -501,16 +507,18 @@
           y = restLen * e;
           x = pivotX + Math.sin(t * 6) * 2 * (1 - e);        // tiny wobble while descending
           bob.style.opacity = String(Math.min(1, k * 4));
-          if (k >= 1) { intro = false; vx = 40; }
+          if (k >= 1) { intro = false; curLen = restLen; vx = 40; }
         } else if (!dragging) {
+          // spider climbs back up its silk after being pulled far away
+          curLen = Math.max(restLen, curLen + (restLen - curLen) * (1 - Math.exp(-dt * 2.2)));
           const ax = reduce ? 0 : Math.sin(t * 0.9) * 14 + Math.sin(t * 2.3) * 5;
           vx = (vx + ax * dt) * AIR; vy = (vy + G * dt) * AIR;
           x += vx * dt; y += vy * dt;
           const dx = x - pivotX, dy = y;
           const len = Math.hypot(dx, dy) || 1;
-          if (len > restLen) {                                   // silk taut: constrain
+          if (len > curLen) {                                    // silk taut: constrain
             const nx = dx / len, ny = dy / len;
-            x = pivotX + nx * restLen; y = ny * restLen;
+            x = pivotX + nx * curLen; y = ny * curLen;
             const vr = vx * nx + vy * ny;
             if (vr > 0) { vx -= vr * nx; vy -= vr * ny; }
             vx *= DAMP; vy *= DAMP;
@@ -589,25 +597,40 @@
         if (intro) return;
         dragging = true; bob.classList.add("dragging", "used");
         bob.setPointerCapture(e.pointerId);
-        px = e.clientX; py = e.clientY; pt = performance.now(); pvx = pvy = 0;
+        trail.length = 0; trail.push({ t: performance.now(), x: e.clientX, y: e.clientY });
         e.preventDefault();
       });
       bob.addEventListener("pointermove", e => {
         if (!dragging) return;
-        const now = performance.now(), dt = Math.max(1, now - pt) / 1000;
-        pvx = (e.clientX - px) / dt; pvy = (e.clientY - py) / dt;
-        px = e.clientX; py = e.clientY; pt = now;
-        let dx = e.clientX - pivotX, dy = e.clientY - pivotY;
-        const len = Math.hypot(dx, dy), max = restLen * 1.9;
-        if (len > max) { dx *= max / len; dy *= max / len; }
-        x = pivotX + dx; y = dy;
+        const now = performance.now();
+        trail.push({ t: now, x: e.clientX, y: e.clientY });
+        while (trail.length > 2 && now - trail[0].t > 120) trail.shift();
+        // go anywhere on the page; silk just stretches
+        x = Math.max(8, Math.min(innerWidth - 8, e.clientX));
+        y = Math.max(8, Math.min(innerHeight - 8, e.clientY)) - pivotY;
       });
       const release = () => {
         if (!dragging) return;
         dragging = false; bob.classList.remove("dragging");
+
+        // release velocity from the last ~120ms of movement
+        let pvx = 0, pvy = 0;
+        if (trail.length > 1) {
+          const a = trail[0], b = trail[trail.length - 1];
+          const dt = Math.max(0.016, (b.t - a.t) / 1000);
+          pvx = (b.x - a.x) / dt; pvy = (b.y - a.y) / dt;
+        }
         vx = Math.max(-1600, Math.min(1600, pvx)); vy = Math.max(-1600, Math.min(1600, pvy));
+
+        // silk is as long as it was stretched; it reels back in from there
+        curLen = Math.max(restLen, Math.hypot(x - pivotX, y));
+
+        // always fire a web: along the throw, or outward from the logo if just let go
         const speed = Math.hypot(pvx, pvy);
-        if (speed > 250) shootWeb(pvx / speed, pvy / speed, speed);   // a real fling fires a web
+        let dx, dy;
+        if (speed > 150) { dx = pvx / speed; dy = pvy / speed; }
+        else { const l = Math.hypot(x - pivotX, y) || 1; dx = (x - pivotX) / l; dy = y / l; }
+        shootWeb(dx, dy, Math.max(speed, 1000));
       };
       bob.addEventListener("pointerup", release);
       bob.addEventListener("pointercancel", release);
