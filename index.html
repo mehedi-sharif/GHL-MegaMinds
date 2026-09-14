@@ -19,7 +19,7 @@
       --colon: #333;
       --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
       --font-display: "Archivo", "Inter", system-ui, sans-serif;
-      --speed: 28; /* marquee px per second */
+      --speed: 42; /* marquee px per second */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -215,8 +215,8 @@
       position: absolute;
       top: 50%;
       left: 0;
-      height: 210px;
-      margin-top: -105px;
+      height: 247px;
+      margin-top: -124px;
       display: flex;
       will-change: transform;
       transform-style: preserve-3d;
@@ -224,10 +224,10 @@
 
     .card {
       position: relative;
-      flex: 0 0 170px;
-      width: 170px;
-      height: 210px;
-      margin-right: 290px;
+      flex: 0 0 200px;
+      width: 200px;
+      height: 247px;
+      margin-right: 260px;
       border-radius: 8px;
       overflow: hidden;
       transform-style: preserve-3d;
@@ -288,7 +288,7 @@
 
       .marquee { top: 46vh; bottom: 96px; }
       .track { top: 50%; }
-      .card { margin-right: 140px; }
+      .card { margin-right: 120px; }
 
       footer { font-size: 12px; }
       .card { --ymul: 0.55; }
@@ -567,9 +567,11 @@
         path.setAttribute("d", d);
         g.appendChild(path);
         webs.appendChild(g);
+        const splats = webs.querySelectorAll("g.web-splat");
+        if (splats.length > 60) splats[0].remove();
 
         const t0 = performance.now();
-        const SHOOT = 160, HOLD = 1100, FADE = 500, SPLAT_HOLD = 4500;
+        const SHOOT = 160, HOLD = 1100, FADE = 500;
         function anim(now) {
           const e = now - t0;
           if (e < SHOOT) {
@@ -584,9 +586,7 @@
             line.style.opacity = String(Math.max(0, 1 - (e - SHOOT - HOLD) / FADE));
             delete line.dataset.live;
           }
-          if (e > SHOOT + HOLD + FADE) line.remove();
-          if (e > SPLAT_HOLD) g.style.opacity = String(Math.max(0, 1 - (e - SPLAT_HOLD) / 800));
-          if (e > SPLAT_HOLD + 800) { g.remove(); return; }
+          if (e > SHOOT + HOLD + FADE) { line.remove(); return; }   // the web splat stays on the page
           requestAnimationFrame(anim);
         }
         requestAnimationFrame(anim);
