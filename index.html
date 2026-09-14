@@ -79,6 +79,8 @@
       stroke-width: 1.2;
       stroke-linecap: round;
     }
+    .pendulum .web { fill: none; stroke: #111; stroke-width: 1; stroke-linecap: round; }
+    .pendulum .web-splat { fill: none; stroke: #111; stroke-width: 0.9; stroke-linejoin: round; }
     .bob {
       position: absolute;
       left: 0; top: 0;
@@ -347,32 +349,27 @@
 
     <!-- Hanging logo -->
     <div class="pendulum" aria-hidden="true">
-      <svg class="thread"><line id="thread" x1="0" y1="0" x2="0" y2="0"/></svg>
+      <svg class="thread"><g id="webs"></g><line id="thread" x1="0" y1="0" x2="0" y2="0"/></svg>
       <div class="bob" id="bob">
         <svg viewBox="0 0 48 48">
           <!-- legs -->
-          <g stroke="#111" stroke-width="1.6" stroke-linecap="round" fill="none">
-            <path d="M14 22 7 18M13 27 5 27M15 32 8 37M34 22l7-4M35 27h8M33 32l7 5"/>
+          <g fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 22c-6-4-9-9-9-16M30 22c6-4 9-9 9-16"/>
+            <path d="M16 26c-7-1-12-4-14-11M32 26c7-1 12-4 14-11"/>
+            <path d="M16 30c-7 2-11 6-13 13M32 30c7 2 11 6 13 13"/>
+            <path d="M18 33c-5 4-8 9-8 15M30 33c5 4 8 9 8 15"/>
           </g>
-          <!-- head -->
-          <circle cx="24" cy="15" r="7" fill="#111"/>
-          <circle cx="21" cy="13.5" r="1.4" fill="#fff"/>
-          <circle cx="27" cy="13.5" r="1.4" fill="#fff"/>
-          <!-- antennae -->
-          <path d="M20 9c-2-3-4-4-6-4M28 9c2-3 4-4 6-4" stroke="#111" stroke-width="1.4" stroke-linecap="round" fill="none"/>
           <!-- body -->
-          <ellipse cx="24" cy="29" rx="13" ry="13.5" fill="#e63b2e"/>
-          <path d="M24 16v27" stroke="#111" stroke-width="1.6"/>
-          <ellipse cx="24" cy="29" rx="13" ry="13.5" fill="none" stroke="#111" stroke-width="1.6"/>
-          <!-- spots -->
-          <circle cx="17.5" cy="24" r="2.4" fill="#111"/>
-          <circle cx="30.5" cy="24" r="2.4" fill="#111"/>
-          <circle cx="16" cy="32" r="2" fill="#111"/>
-          <circle cx="32" cy="32" r="2" fill="#111"/>
-          <circle cx="20.5" cy="37.5" r="1.6" fill="#111"/>
-          <circle cx="27.5" cy="37.5" r="1.6" fill="#111"/>
-          <!-- highlight -->
-          <ellipse cx="19" cy="21" rx="2.5" ry="1.4" fill="#fff" opacity=".45" transform="rotate(-30 19 21)"/>
+          <ellipse cx="24" cy="31" rx="9.5" ry="11" fill="#111"/>
+          <circle cx="24" cy="18" r="6" fill="#111"/>
+          <!-- eyes -->
+          <circle cx="21.6" cy="16.5" r="1.5" fill="#fff"/>
+          <circle cx="26.4" cy="16.5" r="1.5" fill="#fff"/>
+          <circle cx="21.9" cy="16.8" r=".7" fill="#111"/>
+          <circle cx="26.7" cy="16.8" r=".7" fill="#111"/>
+          <!-- markings -->
+          <path d="M24 24v13" stroke="#e63b2e" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20 29h8" stroke="#e63b2e" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <span class="hint">Drag</span>
       </div>
@@ -496,13 +493,15 @@
     }
     requestAnimationFrame(frame);
 
-    // ---- Hanging logo: elastic pendulum you can drag ----
+    // ---- Spider on a silk thread: lowers itself from the logo, drag & fling to shoot webs ----
     (function () {
       const bob = document.getElementById("bob");
       const thread = document.getElementById("thread");
-      const hintUsed = () => bob.classList.add("used");
-
+      const webs = document.getElementById("webs");
       const logo = document.getElementById("logo");
+      const SVG_NS = "http://www.w3.org/2000/svg";
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
       let pivotX = 0, pivotY = 0, restLen = 0;
       const rest = () => {
         const r = logo.getBoundingClientRect();
@@ -512,42 +511,127 @@
       };
       rest(); addEventListener("resize", rest);
 
-      // state (y is measured from the pivot)
-      let x = pivotX, y = restLen, vx = 0, vy = 0;
+      // state (y is measured down from the pivot)
+      let x = pivotX, y = 0, vx = 0, vy = 0;
       let dragging = false, px = 0, py = 0, pvx = 0, pvy = 0, pt = 0;
       const G = 2400, DAMP = 0.995, AIR = 0.999;
       let last = performance.now(), t = 0;
-      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // intro: crawl out of the logo and lower down the silk
+      const INTRO_DELAY = 0.6, INTRO_DUR = reduce ? 0 : 2.2;
+      let intro = true;
+      bob.style.opacity = "0";
+
+      const easeOut = k => 1 - Math.pow(1 - k, 3);
+
+      function render() {
+        const ang = Math.atan2(x - pivotX, y) * -180 / Math.PI;
+        bob.style.transform = `translate(${x}px, ${pivotY + y}px) rotate(${ang}deg)`;
+        thread.setAttribute("x1", pivotX); thread.setAttribute("y1", pivotY);
+        thread.setAttribute("x2", x - 6 * Math.sin(ang * Math.PI / 180));
+        thread.setAttribute("y2", pivotY + y - 12 * Math.cos(ang * Math.PI / 180));
+        // any active web strands follow the spider
+        for (const w of webs.querySelectorAll("line[data-live]")) {
+          w.setAttribute("x1", x); w.setAttribute("y1", pivotY + y);
+        }
+      }
 
       function step(now) {
         const dt = Math.min(0.032, (now - last) / 1000); last = now; t += dt;
-        if (!dragging) {
-          // gravity + a whisper of ambient breeze so it never sits perfectly still
+
+        if (intro) {
+          const k = Math.max(0, Math.min(1, (t - INTRO_DELAY) / INTRO_DUR));
+          const e = easeOut(k);
+          y = restLen * e;
+          x = pivotX + Math.sin(t * 6) * 2 * (1 - e);        // tiny wobble while descending
+          bob.style.opacity = String(Math.min(1, k * 4));
+          if (k >= 1) { intro = false; vx = 40; }
+        } else if (!dragging) {
           const ax = reduce ? 0 : Math.sin(t * 0.9) * 14 + Math.sin(t * 2.3) * 5;
           vx = (vx + ax * dt) * AIR; vy = (vy + G * dt) * AIR;
           x += vx * dt; y += vy * dt;
-          // thread: a string, not a rod — constrains only when taut
           const dx = x - pivotX, dy = y;
           const len = Math.hypot(dx, dy) || 1;
-          if (len > restLen) {
+          if (len > restLen) {                                   // silk taut: constrain
             const nx = dx / len, ny = dy / len;
             x = pivotX + nx * restLen; y = ny * restLen;
-            const vr = vx * nx + vy * ny;          // radial (outward) velocity
+            const vr = vx * nx + vy * ny;
             if (vr > 0) { vx -= vr * nx; vy -= vr * ny; }
             vx *= DAMP; vy *= DAMP;
           }
         }
-        const ang = Math.atan2(x - pivotX, y) * -180 / Math.PI;
-        bob.style.transform = `translate(${x}px, ${pivotY + y}px) rotate(${ang}deg)`;
-        thread.setAttribute("x1", pivotX); thread.setAttribute("y1", pivotY);
-        thread.setAttribute("x2", x - 8 * Math.sin(ang * Math.PI / 180));
-        thread.setAttribute("y2", pivotY + y - 16 * Math.cos(ang * Math.PI / 180));
+        render();
         requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
 
+      // ---- web shooting ----
+      function shootWeb(dirX, dirY, power) {
+        const sx = x, sy = pivotY + y;
+        const len = Math.max(140, Math.min(360, power / 4));
+        let ex = sx + dirX * len, ey = sy + dirY * len;
+        ex = Math.max(24, Math.min(innerWidth - 24, ex));
+        ey = Math.max(24, Math.min(innerHeight - 24, ey));
+
+        const line = document.createElementNS(SVG_NS, "line");
+        line.setAttribute("class", "web");
+        line.setAttribute("x1", sx); line.setAttribute("y1", sy);
+        line.setAttribute("x2", sx); line.setAttribute("y2", sy);
+        line.dataset.live = "1";
+        webs.appendChild(line);
+
+        // splat: spokes + rings, drawn at the impact point
+        const g = document.createElementNS(SVG_NS, "g");
+        g.setAttribute("class", "web-splat");
+        g.setAttribute("transform", `translate(${ex} ${ey}) rotate(${Math.random() * 360})`);
+        g.style.opacity = "0";
+        const R = 24;
+        let d = "";
+        for (let i = 0; i < 8; i++) {
+          const a = i * Math.PI / 4;
+          d += `M0 0L${(R * Math.cos(a)).toFixed(1)} ${(R * Math.sin(a)).toFixed(1)}`;
+        }
+        for (const r of [7, 13, 20]) {
+          const pts = [];
+          for (let i = 0; i < 8; i++) {
+            const a = i * Math.PI / 4 + Math.PI / 8;
+            pts.push(`${(r * Math.cos(a)).toFixed(1)} ${(r * Math.sin(a)).toFixed(1)}`);
+          }
+          d += `M${pts.join("L")}Z`;
+        }
+        const path = document.createElementNS(SVG_NS, "path");
+        path.setAttribute("d", d);
+        g.appendChild(path);
+        webs.appendChild(g);
+
+        const t0 = performance.now();
+        const SHOOT = 160, HOLD = 1100, FADE = 500, SPLAT_HOLD = 4500;
+        function anim(now) {
+          const e = now - t0;
+          if (e < SHOOT) {
+            const k = easeOut(e / SHOOT);
+            const cx = x, cy = pivotY + y;
+            line.setAttribute("x2", cx + (ex - cx) * k); line.setAttribute("y2", cy + (ey - cy) * k);
+          } else {
+            line.setAttribute("x2", ex); line.setAttribute("y2", ey);
+            g.style.opacity = String(Math.min(1, (e - SHOOT) / 120));
+          }
+          if (e > SHOOT + HOLD) {
+            line.style.opacity = String(Math.max(0, 1 - (e - SHOOT - HOLD) / FADE));
+            delete line.dataset.live;
+          }
+          if (e > SHOOT + HOLD + FADE) line.remove();
+          if (e > SPLAT_HOLD) g.style.opacity = String(Math.max(0, 1 - (e - SPLAT_HOLD) / 800));
+          if (e > SPLAT_HOLD + 800) { g.remove(); return; }
+          requestAnimationFrame(anim);
+        }
+        requestAnimationFrame(anim);
+      }
+
+      // ---- drag ----
       bob.addEventListener("pointerdown", e => {
-        dragging = true; bob.classList.add("dragging"); hintUsed();
+        if (intro) return;
+        dragging = true; bob.classList.add("dragging", "used");
         bob.setPointerCapture(e.pointerId);
         px = e.clientX; py = e.clientY; pt = performance.now(); pvx = pvy = 0;
         e.preventDefault();
@@ -557,7 +641,6 @@
         const now = performance.now(), dt = Math.max(1, now - pt) / 1000;
         pvx = (e.clientX - px) / dt; pvy = (e.clientY - py) / dt;
         px = e.clientX; py = e.clientY; pt = now;
-        // keep it on a leash so the thread can't be pulled absurdly far
         let dx = e.clientX - pivotX, dy = e.clientY - pivotY;
         const len = Math.hypot(dx, dy), max = restLen * 1.9;
         if (len > max) { dx *= max / len; dy *= max / len; }
@@ -567,6 +650,8 @@
         if (!dragging) return;
         dragging = false; bob.classList.remove("dragging");
         vx = Math.max(-1600, Math.min(1600, pvx)); vy = Math.max(-1600, Math.min(1600, pvy));
+        const speed = Math.hypot(pvx, pvy);
+        if (speed > 250) shootWeb(pvx / speed, pvy / speed, speed);   // a real fling fires a web
       };
       bob.addEventListener("pointerup", release);
       bob.addEventListener("pointercancel", release);
