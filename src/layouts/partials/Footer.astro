@@ -1,0 +1,73 @@
+---
+import config from "@/config/config.json";
+import social from "@/config/social.json";
+import DynamicIcon from "@/helpers/DynamicIcon";
+const { copyright } = config.params;
+---
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div class="about">
+        <div class="logo">GHL Megaminds</div>
+        <p>
+          We set up GoHighLevel and keep it running. For business owners and for
+          resellers who sell it as their own software.
+        </p>
+        <ul
+          class="socials"
+          style="display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;list-style:none;margin:22px 0 0;padding:0"
+        >
+          {
+            social.main.map((item) => (
+              <li style="display:inline-flex;margin:0">
+                <a
+                  aria-label={item.name}
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;font-size:16px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)"
+                >
+                  <span class="sr-only">{item.name}</span>
+                  <DynamicIcon icon={item.icon} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <h5>Services</h5>
+        <ul>
+          <li><a href="/business-owners">GoHighLevel Setup</a></li>
+          <li><a href="/business-owners#fix">Fix Existing Account</a></li>
+          <li><a href="/business-owners#care">Ongoing Maintenance</a></li>
+          <li><a href="/resellers">SaaS Mode Setup</a></li>
+          <li><a href="/resellers#fix">Fix Existing SaaS</a></li>
+          <li><a href="/resellers#onboarding">Onboarding Support</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Resources</h5>
+        <ul>
+          <li><a href="/case-studies">Case Studies</a></li>
+          <li><a href="/tools">Tools</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="bigmark">ghl megaminds</div>
+    <div class="fbot">
+      <span>{copyright}</span>
+    </div>
+  </div>
+</footer>

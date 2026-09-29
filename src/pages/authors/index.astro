@@ -1,0 +1,97 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import { isByAuthor } from "@/lib/utils/authors";
+import { ORG_ID, SITE, canonicalUrl } from "@/lib/seo";
+
+const authorIndex = await getListPage("authors", "-index");
+
+const buildDrafts = process.argv.includes("--buildDrafts");
+if (!buildDrafts && authorIndex.data.draft) {
+  return Astro.redirect("/404");
+}
+
+const authors = (await getSinglePage("authors")).sort(
+  (a, b) => (a.data.order ?? 99) - (b.data.order ?? 99),
+);
+const posts = await getSinglePage("blog");
+
+const countFor = (name: string) =>
+  posts.filter((post) => isByAuthor(post, name)).length;
+
+const indexUrl = canonicalUrl("/authors");
+const schema = [
+  {
+    "@type": "CollectionPage",
+    "@id": `${indexUrl}#webpage`,
+    url: indexUrl,
+    name: authorIndex.data.meta_title || authorIndex.data.title,
+    description: authorIndex.data.description,
+    inLanguage: SITE.lang,
+    isPartOf: { "@id": `${SITE.url}/#website` },
+    publisher: { "@id": ORG_ID },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: authors.length,
+      itemListElement: authors.map((author, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: canonicalUrl(`/authors/${author.id}`),
+        name: author.data.title,
+      })),
+    },
+  },
+];
+---
+
+<Base
+  title={authorIndex.data.title}
+  meta_title={authorIndex.data.meta_title}
+  description={authorIndex.data.description}
+  schema={schema}
+>
+  <section class="hero first">
+    <div class="wrap">
+      <div class="eyebrow">
+        <span class="label">[ Authors ]</span><span class="plus">++++</span>
+      </div>
+      <h1>Who writes<br /><span class="grad">this stuff.</span></h1>
+      <p class="lede">
+        The same people who build and look after accounts all day. No ghost
+        writers.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="grid g3">
+        {
+          authors.map((author) => {
+            const n = countFor(author.data.title);
+            return (
+              <a class="card pad hoverable member" href={`/authors/${author.id}`}>
+                {author.data.image && (
+                  <div class="ph">
+                    <img
+                      src={author.data.image}
+                      alt={author.data.title}
+                      width="400"
+                      height="400"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+                <h3>{author.data.title}</h3>
+                {author.data.role && <p class="role">{author.data.role}</p>}
+                <p class="yrs">
+                  <b>{n}</b> {n === 1 ? "post" : "posts"}
+                </p>
+              </a>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+</Base>

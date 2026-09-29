@@ -1,0 +1,8 @@
+---
+import config from "@/config/config.json";
+
+const { logo_text, title }: { logo_text: string; title: string } = config.site;
+const text = logo_text || title;
+---
+
+<a href="/" class="logo" aria-label={text}>{text}</a>

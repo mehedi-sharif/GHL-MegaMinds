@@ -1,0 +1,66 @@
+{
+  "site": {
+    "title": "GHL Megaminds — GoHighLevel, built and run for you",
+    "base_url": "https://ghlmegaminds.com",
+    "base_path": "/",
+    "trailing_slash": false,
+    "favicon": "/images/favicon.png",
+    "logo": "",
+    "logo_darkmode": "",
+    "logo_width": "150",
+    "logo_height": "30",
+    "logo_text": "GHL Megaminds"
+  },
+
+  "settings": {
+    "search": true,
+    "sticky_header": true,
+    "theme_switcher": true,
+    "default_theme": "light",
+    "pagination": 8,
+    "summary_length": 200,
+    "blog_folder": "blog"
+  },
+
+  "announcement": {
+    "enable": false,
+    "content": "<span class='text-center block'>Done-for-you GoHighLevel setup and support. <a class='underline' href='/contact'>Book a free call</a></span>",
+    "expire_days": 7
+  },
+
+  "params": {
+    "contact_form_action": "#",
+    "copyright": "© 2026 GHL Megaminds. All rights reserved."
+  },
+
+  "navigation_button": {
+    "enable": true,
+    "label": "Book a Call →",
+    "link": "/contact"
+  },
+
+  "google_tag_manager": {
+    "enable": false,
+    "gtm_id": "GTM-XXXXXX"
+  },
+
+  "disqus": {
+    "enable": false,
+    "shortname": "ghl-megaminds",
+    "settings": {}
+  },
+
+  "metadata": {
+    "meta_author": "GHL Megaminds",
+    "meta_image": "/images/og-image.png",
+    "meta_description": "GHL Megaminds is a small team of certified HighLevel admins and software engineers. We set up your GoHighLevel account, fix what breaks, and take care of your clients."
+  },
+
+  "llms": {
+    "generate_llms_txt": true,
+    "generate_llms_full_txt": true,
+    "generate_individual_md": true,
+    "include": [],
+    "exclude": []
+  }
+}

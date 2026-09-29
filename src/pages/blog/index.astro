@@ -1,0 +1,105 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import { postAuthors } from "@/lib/utils/authors";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+import { ORG_ID, SITE, canonicalUrl } from "@/lib/seo";
+
+const BLOG_FOLDER = "blog";
+
+const postIndex = await getListPage(BLOG_FOLDER, "-index");
+const buildDrafts = process.argv.includes("--buildDrafts");
+if (!buildDrafts && postIndex.data.draft) {
+  return Astro.redirect("/404");
+}
+
+const posts = sortByDate(await getSinglePage(BLOG_FOLDER));
+
+const blogUrl = canonicalUrl("/blog");
+const schema = [
+  {
+    "@type": "Blog",
+    "@id": `${blogUrl}#blog`,
+    url: blogUrl,
+    name: `${SITE.name} — Blog`,
+    description: postIndex.data.description,
+    inLanguage: SITE.lang,
+    publisher: { "@id": ORG_ID },
+    blogPost: posts.map((post) => ({
+      "@type": "BlogPosting",
+      "@id": `${canonicalUrl(`/blog/${post.id}`)}#article`,
+      headline: post.data.title,
+      url: canonicalUrl(`/blog/${post.id}`),
+      ...(post.data.date
+        ? { datePublished: new Date(post.data.date).toISOString() }
+        : {}),
+    })),
+  },
+];
+
+const monthYear = (d: Date | undefined) =>
+  d
+    ? new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric" }).format(
+        new Date(d),
+      )
+    : "";
+---
+
+<Base
+  title={postIndex.data.title}
+  meta_title={postIndex.data.meta_title}
+  image={postIndex.data.image}
+  description={postIndex.data.description}
+  schema={schema}
+>
+  <main>
+    <section class="hero first">
+      <div class="wrap">
+        <div class="eyebrow">
+          <span class="label">[ Blog ]</span><span class="plus">++++</span>
+        </div>
+        <h1>
+          Short reads on<br /><span class="grad">making GoHighLevel work.</span>
+        </h1>
+        <p class="lede">
+          We write the things we say on calls all day. Small posts, plain words,
+          one idea each.
+        </p>
+      </div>
+    </section>
+
+    <section class="first">
+      <div class="wrap">
+        {
+          posts.map((post) => (
+            <a class="post" href={`/blog/${post.id}`}>
+              <div class="meta" set:html={`${monthYear(post.data.date)}<br>${post.data.categories?.[0] ?? ""}`} />
+              <div>
+                <h4>{post.data.title}</h4>
+                <p>{post.data.description}</p>
+                <p class="byline">By {postAuthors(post).join(" & ")}</p>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="cta">
+          <span class="label">Next step</span>
+          <h2>Reading is good. Doing is better.</h2>
+          <p>
+            If a post made you nod, book a call. We will do that thing for you
+            this month.
+          </p>
+          <div class="btns">
+            <a class="btn pri" href="/contact">Book a Free Call &rarr;</a>
+            <a class="btn" href="/tools">Get the free guides &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>

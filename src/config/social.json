@@ -1,0 +1,24 @@
+{
+  "main": [
+    {
+      "name": "facebook",
+      "icon": "FaFacebookF",
+      "link": "#"
+    },
+    {
+      "name": "github",
+      "icon": "FaGithub",
+      "link": "#"
+    },
+    {
+      "name": "linkedin",
+      "icon": "FaLinkedinIn",
+      "link": "#"
+    },
+    {
+      "name": "youtube",
+      "icon": "FaYoutube",
+      "link": "#"
+    }
+  ]
+}
