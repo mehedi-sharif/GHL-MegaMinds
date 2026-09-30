@@ -32,6 +32,10 @@ function ghlHeaders(apiKey) {
   };
 }
 
+function logGhlFailure(stage, details = {}) {
+  console.error("[contact-form] GoHighLevel request failed", { stage, ...details });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -69,15 +73,18 @@ export default {
     const headers = ghlHeaders(env.GHL_SubAccount_API_Key);
     const locationId = encodeURIComponent(env.GHL_SubAccount_LocationId);
 
+    let failureStage = "custom_fields_lookup";
     try {
       const fieldsResponse = await fetch(
         `https://services.leadconnectorhq.com/locations/${locationId}/customFields?model=contact`,
         { headers, signal: AbortSignal.timeout(15000) },
       );
       if (!fieldsResponse.ok) {
+        logGhlFailure(failureStage, { status: fieldsResponse.status });
         return resultPage(502, "We could not send your message", "Please try again in a little while.");
       }
 
+      failureStage = "custom_fields_response";
       const fieldsPayload = await fieldsResponse.json();
       const fields = fieldsPayload.customFields ?? fieldsPayload.fields ?? [];
       const customFields = customFieldKeys.map((key, index) => {
@@ -91,10 +98,16 @@ export default {
       });
 
       if (customFields.some((field) => field === null)) {
+        const missingFieldKeys = customFieldKeys.filter((key) => {
+          const field = fields.find((item) => item.key === key || item.fieldKey === key);
+          return !field?.id;
+        });
+        logGhlFailure("custom_fields_missing", { missingFieldKeys });
         return resultPage(502, "We could not send your message", "Please try again in a little while.");
       }
 
       const [firstName, ...lastNameParts] = name.split(/\s+/);
+      failureStage = "contact_upsert";
       const contactResponse = await fetch("https://services.leadconnectorhq.com/contacts/upsert", {
         method: "POST",
         headers,
@@ -113,11 +126,13 @@ export default {
       });
 
       if (!contactResponse.ok) {
+        logGhlFailure(failureStage, { status: contactResponse.status });
         return resultPage(502, "We could not send your message", "Please try again in a little while.");
       }
 
       return resultPage(200, "Thanks for reaching out", "Your details have been sent. We will be in touch soon.");
-    } catch {
+    } catch (error) {
+      logGhlFailure(failureStage, { errorName: error instanceof Error ? error.name : "UnknownError" });
       return resultPage(502, "We could not send your message", "Please try again in a little while.");
     }
   },
