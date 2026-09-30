@@ -58,7 +58,7 @@ export const GET: APIRoute = () => {
     ...AI_AGENTS.flatMap((agent) => [`User-agent: ${agent}`]),
     "Allow: /",
     "",
-    `Sitemap: ${SITE.url}/sitemap-index.xml`,
+    `Sitemap: ${SITE.url}/sitemap-0.xml`,
     "",
   ];
 
