@@ -22,24 +22,24 @@ draft: false
    <p class="lede" style="margin-top:14px">Rather talk it through? <a href="https://api.leadconnectorhq.com/widget/booking/b40dt1YgHIrDlJDWZd1D" target="_blank" rel="noopener" style="color:var(--acc);text-decoration:underline;text-underline-offset:2px">Book a free 30 minute call</a> instead.</p>
   </div>
   <div class="cform">
-   <form onsubmit="return false">
+   <form action="/api/contact" method="post">
     <div class="row2">
-     <div><label for="n">Your name</label><input id="n" type="text" placeholder="Jane Smith"></div>
-     <div><label for="e">Email</label><input id="e" type="email" placeholder="jane@business.com"></div>
+     <div><label for="n">Your name</label><input id="n" name="name" type="text" autocomplete="name" placeholder="Jane Smith" required></div>
+     <div><label for="e">Email</label><input id="e" name="email" type="email" autocomplete="email" placeholder="jane@business.com" required></div>
     </div>
     <div class="row2">
-     <div><label for="c">Business name</label><input id="c" type="text" placeholder="Smith Plumbing"></div>
-     <div><label for="w">Website</label><input id="w" type="text" placeholder="smithplumbing.com"></div>
+     <div><label for="c">Business name</label><input id="c" name="businessName" type="text" autocomplete="organization" placeholder="Smith Plumbing"></div>
+     <div><label for="w">Website</label><input id="w" name="website" type="text" autocomplete="url" placeholder="smithplumbing.com"></div>
     </div>
     <div><label for="t">I am a&hellip;</label>
-     <select id="t">
+     <select id="t" name="clientType" required>
       <option>Business owner</option>
       <option>Reseller / agency</option>
       <option>Not sure yet</option>
      </select>
     </div>
     <div><label for="s">What do you want?</label>
-     <select id="s">
+    <select id="s" name="serviceRequested" required>
       <option>GoHighLevel Setup</option>
       <option>Ongoing Maintenance</option>
       <option>SaaS Mode Setup</option>
@@ -47,7 +47,7 @@ draft: false
       <option>I need help picking</option>
      </select>
     </div>
-    <div><label for="m">Tell us more</label><textarea id="m" placeholder="What is working, what is broken, and what you want to happen."></textarea></div>
+    <div><label for="m">Tell us more</label><textarea id="m" name="projectDetails" maxlength="5000" placeholder="What is working, what is broken, and what you want to happen."></textarea></div>
     <button class="btn pri" type="submit" style="justify-content:center">Send it over &rarr;</button>
    </form>
   </div>

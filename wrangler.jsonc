@@ -3,9 +3,12 @@
   // Deploy:  npm run deploy:cf-workers
   // Preview: npm run preview:cf-workers
   "name": "astroplate",
+  "main": "./src/worker.js",
   "compatibility_date": "2026-03-02",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/contact"],
     "not_found_handling": "404-page",
   },
 }
