@@ -3,7 +3,7 @@
     {
       "name": "facebook",
       "icon": "FaFacebookF",
-      "link": "#"
+      "link": "https://www.facebook.com/ghlmegaminds"
     },
     {
       "name": "github",
@@ -20,5 +20,6 @@
       "icon": "FaYoutube",
       "link": "https://www.youtube.com/@ghlmegaminds"
     }
-  ]
+  ],
+  "draft": false
 }
