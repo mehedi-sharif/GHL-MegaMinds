@@ -188,30 +188,69 @@ export default {
       const contactPayload = await contactResponse.json();
       const contactId = contactPayload?.contact?.id;
 
-      // Attach full submission details as a contact note so no data is lost
       if (contactId) {
-        try {
-          const noteContent = [
-            "Website Contact Form Submission",
-            "--------------------------------",
-            `Name: ${name}`,
-            `Email: ${email}`,
-            businessName ? `Business Name: ${businessName}` : null,
-            website ? `Website: ${website}` : null,
-            `Client Type: ${clientType}`,
-            `Service Requested: ${serviceRequested}`,
-            projectDetails ? `\nProject Details:\n${projectDetails}` : null,
-          ]
-            .filter(Boolean)
-            .join("\n");
+        const summaryLines = [
+          "Website Contact Form Submission",
+          "--------------------------------",
+          `Name: ${name}`,
+          `Email: ${email}`,
+          businessName ? `Business Name: ${businessName}` : null,
+          website ? `Website: ${website}` : null,
+          `Client Type: ${clientType}`,
+          `Service Requested: ${serviceRequested}`,
+          "",
+          "Project Details:",
+          projectDetails || "None provided",
+        ].filter(Boolean);
 
+        const messageBody = summaryLines.join("\n");
+
+        const messageHtml = [
+          `<h3>Website Contact Form Submission</h3>`,
+          `<p><strong>Name:</strong> ${name}<br>`,
+          `<strong>Email:</strong> ${email}<br>`,
+          businessName ? `<strong>Business Name:</strong> ${businessName}<br>` : "",
+          website ? `<strong>Website:</strong> ${website}<br>` : "",
+          `<strong>Client Type:</strong> ${clientType}<br>`,
+          `<strong>Service Requested:</strong> ${serviceRequested}</p>`,
+          `<p><strong>Project Details:</strong><br>${(projectDetails || "None provided").replace(/\n/g, "<br>")}</p>`,
+        ].join("");
+
+        const inboundEmailTo =
+          env.GHL_INBOUND_EMAIL_TO || "contact@ghlmegaminds.com";
+
+        // 1. Create Inbound Message in GoHighLevel Conversations
+        try {
+          await fetch(
+            "https://services.leadconnectorhq.com/conversations/messages/inbound",
+            {
+              method: "POST",
+              headers,
+              signal: AbortSignal.timeout(10000),
+              body: JSON.stringify({
+                type: "Email",
+                contactId,
+                emailTo: inboundEmailTo,
+                emailFrom: email,
+                subject: `Website Contact: ${serviceRequested} - ${name}`,
+                body: messageBody,
+                html: messageHtml,
+              }),
+            },
+          );
+        } catch (convErr) {
+          console.warn("[contact-form] Conversation inbound message warning:", convErr);
+        }
+
+        // 2. Attach Contact Note as reference
+        try {
           await fetch(
             `https://services.leadconnectorhq.com/contacts/${contactId}/notes`,
             {
               method: "POST",
               headers,
               signal: AbortSignal.timeout(10000),
-              body: JSON.stringify({ body: noteContent }),
+              body: JSON.stringify({ body: messageBody }),
             },
           );
         } catch (noteErr) {
