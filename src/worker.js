@@ -92,70 +92,87 @@ export default {
     const headers = ghlHeaders(apiKey);
     const locationId = encodeURIComponent(rawLocationId);
 
-    let failureStage = "custom_fields_lookup";
-    try {
-      const fieldsResponse = await fetch(
-        `https://services.leadconnectorhq.com/locations/${locationId}/customFields?model=contact`,
-        { headers, signal: AbortSignal.timeout(15000) },
-      );
-      if (!fieldsResponse.ok) {
-        logGhlFailure(failureStage, { status: fieldsResponse.status });
-        return resultPage(
-          502,
-          "We could not send your message",
-          "Please try again in a little while.",
-        );
-      }
+    // Attempt custom fields lookup (if configured via env or discoverable via API)
+    let customFields = [];
 
-      failureStage = "custom_fields_response";
-      const fieldsPayload = await fieldsResponse.json();
-      const fields = fieldsPayload.customFields ?? fieldsPayload.fields ?? [];
-      const customFields = customFieldKeys.map((key, index) => {
-        const field = fields.find(
-          (item) => item.key === key || item.fieldKey === key,
-        );
-        if (!field?.id) return null;
-        return {
-          id: field.id,
-          key: field.key ?? field.fieldKey ?? key,
-          fieldValue: [clientType, serviceRequested, projectDetails][index],
-        };
-      });
+    const envCustomFieldMap = {
+      "contact.client_type": env.GHL_CUSTOM_FIELD_CLIENT_TYPE,
+      "contact.service_requested": env.GHL_CUSTOM_FIELD_SERVICE_REQUESTED,
+      "contact.project_details": env.GHL_CUSTOM_FIELD_PROJECT_DETAILS,
+    };
 
-      if (customFields.some((field) => field === null)) {
-        const missingFieldKeys = customFieldKeys.filter((key) => {
-          const field = fields.find(
-            (item) => item.key === key || item.fieldKey === key,
+    const fieldValues = [clientType, serviceRequested, projectDetails];
+
+    if (customFieldKeys.every((key) => !!envCustomFieldMap[key])) {
+      customFields = customFieldKeys.map((key, index) => ({
+        id: envCustomFieldMap[key],
+        key,
+        fieldValue: fieldValues[index],
+      }));
+    } else {
+      try {
+        const fieldsResponse = await fetch(
+          `https://services.leadconnectorhq.com/locations/${locationId}/customFields?model=contact`,
+          { headers, signal: AbortSignal.timeout(10000) },
+        );
+        if (fieldsResponse.ok) {
+          const fieldsPayload = await fieldsResponse.json();
+          const fields = fieldsPayload.customFields ?? fieldsPayload.fields ?? [];
+          const mapped = customFieldKeys.map((key, index) => {
+            const field = fields.find(
+              (item) => item.key === key || item.fieldKey === key,
+            );
+            if (!field?.id) return null;
+            return {
+              id: field.id,
+              key: field.key ?? field.fieldKey ?? key,
+              fieldValue: fieldValues[index],
+            };
+          });
+
+          if (mapped.every((f) => f !== null)) {
+            customFields = mapped;
+          } else {
+            console.warn(
+              "[contact-form] Some custom fields could not be matched in GoHighLevel account. Proceeding with contact upsert and note.",
+            );
+          }
+        } else {
+          console.warn(
+            `[contact-form] GoHighLevel custom fields lookup returned ${fieldsResponse.status} (token may lack locations/customFields.readonly scope). Proceeding with contact upsert and note.`,
           );
-          return !field?.id;
-        });
-        logGhlFailure("custom_fields_missing", { missingFieldKeys });
-        return resultPage(
-          502,
-          "We could not send your message",
-          "Please try again in a little while.",
-        );
+        }
+      } catch (err) {
+        console.warn("[contact-form] Custom fields lookup error:", err);
+      }
+    }
+
+    const [firstName, ...lastNameParts] = name.split(/\s+/);
+    let failureStage = "contact_upsert";
+    try {
+      const upsertBody = {
+        firstName,
+        lastName: lastNameParts.join(" "),
+        name,
+        email,
+        companyName: businessName || undefined,
+        website: website || undefined,
+        locationId: rawLocationId,
+        source: "Website contact form",
+        tags: ["website-lead"],
+      };
+
+      if (customFields.length > 0) {
+        upsertBody.customFields = customFields;
       }
 
-      const [firstName, ...lastNameParts] = name.split(/\s+/);
-      failureStage = "contact_upsert";
       const contactResponse = await fetch(
         "https://services.leadconnectorhq.com/contacts/upsert",
         {
           method: "POST",
           headers,
           signal: AbortSignal.timeout(15000),
-          body: JSON.stringify({
-            firstName,
-            lastName: lastNameParts.join(" "),
-            name,
-            email,
-            companyName: businessName || undefined,
-            website: website || undefined,
-            locationId: rawLocationId,
-            source: "Website contact form",
-            customFields,
-          }),
+          body: JSON.stringify(upsertBody),
         },
       );
 
@@ -166,6 +183,40 @@ export default {
           "We could not send your message",
           "Please try again in a little while.",
         );
+      }
+
+      const contactPayload = await contactResponse.json();
+      const contactId = contactPayload?.contact?.id;
+
+      // Attach full submission details as a contact note so no data is lost
+      if (contactId) {
+        try {
+          const noteContent = [
+            "Website Contact Form Submission",
+            "--------------------------------",
+            `Name: ${name}`,
+            `Email: ${email}`,
+            businessName ? `Business Name: ${businessName}` : null,
+            website ? `Website: ${website}` : null,
+            `Client Type: ${clientType}`,
+            `Service Requested: ${serviceRequested}`,
+            projectDetails ? `\nProject Details:\n${projectDetails}` : null,
+          ]
+            .filter(Boolean)
+            .join("\n");
+
+          await fetch(
+            `https://services.leadconnectorhq.com/contacts/${contactId}/notes`,
+            {
+              method: "POST",
+              headers,
+              signal: AbortSignal.timeout(10000),
+              body: JSON.stringify({ body: noteContent }),
+            },
+          );
+        } catch (noteErr) {
+          console.warn("[contact-form] Note creation warning:", noteErr);
+        }
       }
 
       return resultPage(
