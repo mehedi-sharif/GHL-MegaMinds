@@ -1,7 +1,9 @@
 import { unified } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
+import node from "@astrojs/node";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
+import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import AutoImport from "astro-auto-import";
 import { defineConfig, fontProviders } from "astro/config";
@@ -10,6 +12,8 @@ import remarkToc from "remark-toc";
 import sharp from "sharp";
 import config from "./src/config/config.json";
 import theme from "./src/config/theme.json";
+
+const isVercel = !!process.env.VERCEL;
 
 
 // Helper to parse font string format: "FontName:wght@400;500;600;700"
@@ -50,15 +54,25 @@ const fontsConfig = Object.entries(theme.fonts.font_family)
 
 // https://astro.build/config
 export default defineConfig({
+  output: "server",
   site: config.site.base_url ? config.site.base_url : "http://examplesite.com",
   base: config.site.base_path ? config.site.base_path : "/",
   trailingSlash: config.site.trailing_slash ? "always" : "never",
-  image: { service: sharp() },
   vite: {
     plugins: [tailwindcss()],
     server: { allowedHosts: true },
   },
   fonts: fontsConfig,
+
+  // Only use Sharp locally — Vercel uses its own image service above
+  ...(isVercel ? {} : { image: { service: sharp() } }),
+  adapter: isVercel
+    ? vercel({
+        edgeMiddleware: false,
+        imageService: true,
+        devImageService: "sharp",
+      })
+    : node({ mode: "standalone" }),
 
   integrations: [
     react(),

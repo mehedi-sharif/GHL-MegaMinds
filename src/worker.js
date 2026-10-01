@@ -33,7 +33,10 @@ function ghlHeaders(apiKey) {
 }
 
 function logGhlFailure(stage, details = {}) {
-  console.error("[contact-form] GoHighLevel request failed", { stage, ...details });
+  console.error("[contact-form] GoHighLevel request failed", {
+    stage,
+    ...details,
+  });
 }
 
 export default {
@@ -47,7 +50,10 @@ export default {
       });
     }
 
-    if (!env.GHL_SubAccount_API_Key || !env.GHL_SubAccount_LocationId) {
+    const apiKey = env.GHL_SUBACCOUNT_API_KEY;
+    const rawLocationId = env.GHL_SUBACCOUNT_LOCATION_ID;
+
+    if (!apiKey || !rawLocationId) {
       return resultPage(503, "Form unavailable", "Please try again later.");
     }
 
@@ -55,7 +61,11 @@ export default {
     try {
       formData = await request.formData();
     } catch {
-      return resultPage(400, "Check your details", "Please submit the contact form again.");
+      return resultPage(
+        400,
+        "Check your details",
+        "Please submit the contact form again.",
+      );
     }
 
     const name = getString(formData, "name", 200);
@@ -66,12 +76,21 @@ export default {
     const serviceRequested = getString(formData, "serviceRequested", 200);
     const projectDetails = getString(formData, "projectDetails", 5000);
 
-    if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !clientType || !serviceRequested) {
-      return resultPage(400, "Check your details", "Please enter your name and a valid email address, then try again.");
+    if (
+      !name ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+      !clientType ||
+      !serviceRequested
+    ) {
+      return resultPage(
+        400,
+        "Check your details",
+        "Please enter your name and a valid email address, then try again.",
+      );
     }
 
-    const headers = ghlHeaders(env.GHL_SubAccount_API_Key);
-    const locationId = encodeURIComponent(env.GHL_SubAccount_LocationId);
+    const headers = ghlHeaders(apiKey);
+    const locationId = encodeURIComponent(rawLocationId);
 
     let failureStage = "custom_fields_lookup";
     try {
@@ -81,14 +100,20 @@ export default {
       );
       if (!fieldsResponse.ok) {
         logGhlFailure(failureStage, { status: fieldsResponse.status });
-        return resultPage(502, "We could not send your message", "Please try again in a little while.");
+        return resultPage(
+          502,
+          "We could not send your message",
+          "Please try again in a little while.",
+        );
       }
 
       failureStage = "custom_fields_response";
       const fieldsPayload = await fieldsResponse.json();
       const fields = fieldsPayload.customFields ?? fieldsPayload.fields ?? [];
       const customFields = customFieldKeys.map((key, index) => {
-        const field = fields.find((item) => item.key === key || item.fieldKey === key);
+        const field = fields.find(
+          (item) => item.key === key || item.fieldKey === key,
+        );
         if (!field?.id) return null;
         return {
           id: field.id,
@@ -99,41 +124,64 @@ export default {
 
       if (customFields.some((field) => field === null)) {
         const missingFieldKeys = customFieldKeys.filter((key) => {
-          const field = fields.find((item) => item.key === key || item.fieldKey === key);
+          const field = fields.find(
+            (item) => item.key === key || item.fieldKey === key,
+          );
           return !field?.id;
         });
         logGhlFailure("custom_fields_missing", { missingFieldKeys });
-        return resultPage(502, "We could not send your message", "Please try again in a little while.");
+        return resultPage(
+          502,
+          "We could not send your message",
+          "Please try again in a little while.",
+        );
       }
 
       const [firstName, ...lastNameParts] = name.split(/\s+/);
       failureStage = "contact_upsert";
-      const contactResponse = await fetch("https://services.leadconnectorhq.com/contacts/upsert", {
-        method: "POST",
-        headers,
-        signal: AbortSignal.timeout(15000),
-        body: JSON.stringify({
-          firstName,
-          lastName: lastNameParts.join(" "),
-          name,
-          email,
-          companyName: businessName || undefined,
-          website: website || undefined,
-          locationId: env.GHL_SubAccount_LocationId,
-          source: "Website contact form",
-          customFields,
-        }),
-      });
+      const contactResponse = await fetch(
+        "https://services.leadconnectorhq.com/contacts/upsert",
+        {
+          method: "POST",
+          headers,
+          signal: AbortSignal.timeout(15000),
+          body: JSON.stringify({
+            firstName,
+            lastName: lastNameParts.join(" "),
+            name,
+            email,
+            companyName: businessName || undefined,
+            website: website || undefined,
+            locationId: rawLocationId,
+            source: "Website contact form",
+            customFields,
+          }),
+        },
+      );
 
       if (!contactResponse.ok) {
         logGhlFailure(failureStage, { status: contactResponse.status });
-        return resultPage(502, "We could not send your message", "Please try again in a little while.");
+        return resultPage(
+          502,
+          "We could not send your message",
+          "Please try again in a little while.",
+        );
       }
 
-      return resultPage(200, "Thanks for reaching out", "Your details have been sent. We will be in touch soon.");
+      return resultPage(
+        200,
+        "Thanks for reaching out",
+        "Your details have been sent. We will be in touch soon.",
+      );
     } catch (error) {
-      logGhlFailure(failureStage, { errorName: error instanceof Error ? error.name : "UnknownError" });
-      return resultPage(502, "We could not send your message", "Please try again in a little while.");
+      logGhlFailure(failureStage, {
+        errorName: error instanceof Error ? error.name : "UnknownError",
+      });
+      return resultPage(
+        502,
+        "We could not send your message",
+        "Please try again in a little while.",
+      );
     }
   },
 };

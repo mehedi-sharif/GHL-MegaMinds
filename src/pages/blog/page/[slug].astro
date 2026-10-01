@@ -9,6 +9,8 @@ import { sortByDate } from "@/lib/utils/sortFunctions";
 import PageHeader from "@/partials/PageHeader.astro";
 import PostSidebar from "@/partials/PostSidebar.astro";
 
+export const prerender = true;
+
 const BLOG_FOLDER = "blog";
 
 const { slug } = Astro.params;

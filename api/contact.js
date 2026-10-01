@@ -3,8 +3,8 @@ import contactWorker from "../src/worker.js";
 export default {
   fetch(request) {
     return contactWorker.fetch(request, {
-      GHL_SubAccount_API_Key: process.env.GHL_SubAccount_API_Key,
-      GHL_SubAccount_LocationId: process.env.GHL_SubAccount_LocationId,
+      GHL_SUBACCOUNT_API_KEY: process.env.GHL_SUBACCOUNT_API_KEY,
+      GHL_SUBACCOUNT_LOCATION_ID: process.env.GHL_SUBACCOUNT_LOCATION_ID,
     });
   },
 };

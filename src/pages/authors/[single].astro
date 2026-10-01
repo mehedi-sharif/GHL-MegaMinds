@@ -5,8 +5,10 @@ import { getSinglePage } from "@/lib/contentParser.astro";
 import { isByAuthor, postAuthors } from "@/lib/utils/authors";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import { slugify } from "@/lib/utils/textConverter";
-import { ORG_ID, absoluteUrl, canonicalUrl, SITE } from "@/lib/seo";
+import { ORG_ID, absoluteUrl, canonicalUrl } from "@/lib/seo";
 import { render } from "astro:content";
+
+export const prerender = true;
 
 export async function getStaticPaths() {
   const authors = await getSinglePage("authors");
@@ -36,7 +38,9 @@ const monthYear = (d: Date | undefined) =>
 // co-authors: everyone else who appears on this author's posts
 const coAuthors = [
   ...new Set(
-    posts.flatMap((p) => postAuthors(p)).filter((n) => slugify(n) !== slugify(title)),
+    posts
+      .flatMap((p) => postAuthors(p))
+      .filter((n) => slugify(n) !== slugify(title)),
   ),
 ];
 
@@ -113,9 +117,9 @@ const schema = [
             social && social.length > 0 && (
               <ul class="socials authorsocials">
                 {social.map(
-                  (item: { name?: string; icon?: string; link?: string }) =>
-                    item.icon &&
-                    item.link && (
+                  (item?: { name?: string; icon?: string; link?: string }) =>
+                    item?.icon &&
+                    item?.link && (
                       <li>
                         <a
                           aria-label={item.name}

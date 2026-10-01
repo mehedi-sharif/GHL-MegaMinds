@@ -7,6 +7,8 @@ import { sortByDate } from "@/lib/utils/sortFunctions";
 import taxonomyFilter from "@/lib/utils/taxonomyFilter";
 import PageHeader from "@/partials/PageHeader.astro";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const BLOG_FOLDER = "blog";
   const tags = await getTaxonomy(BLOG_FOLDER, "tags");

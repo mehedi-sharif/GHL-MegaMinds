@@ -4,6 +4,8 @@ import { getSinglePage } from "@/lib/contentParser.astro";
 import { ORG_ID, SITE, canonicalUrl } from "@/lib/seo";
 import { render } from "astro:content";
 
+export const prerender = true;
+
 // get static paths for all pages
 export async function getStaticPaths() {
   const COLLECTION_FOLDER = "pages";

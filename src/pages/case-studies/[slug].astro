@@ -3,6 +3,8 @@ import Base from "@/layouts/Base.astro";
 import { getCollection, render } from "astro:content";
 import { ORG_ID, SITE, absoluteUrl, canonicalUrl } from "@/lib/seo";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const buildDrafts = process.argv.includes("--buildDrafts");
   const studies = (await getCollection("case-studies"))
