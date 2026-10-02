@@ -1,0 +1,31 @@
+---
+import Page from '../../layouts/Page.astro';
+import PostList from '../../components/PostList.astro';
+import { published, slugify, sortByDate, taxonomy } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const terms = await taxonomy('tags');
+  return terms.map((t) => ({ params: { tag: t.slug }, props: { name: t.name } }));
+}
+
+const { name } = Astro.props;
+const { tag } = Astro.params;
+const posts = sortByDate(await published('blog')).filter((p) => p.data.tags.some((t) => slugify(t) === tag));
+---
+<Page
+  title={name}
+  meta_title={`${name} | GHL Megaminds blog`}
+  description={`Every GHL Megaminds post filed under ${name}. Short, practical reads on getting real work out of GoHighLevel.`}
+>
+  <section class="hero first">
+    <div class="wrap">
+      <div class="eyebrow"><a class="label ulink" href="/tags">[ Tags ]</a><span class="plus">++++</span></div>
+      <h1>{name}</h1>
+    </div>
+  </section>
+  <section class="first">
+    <div class="wrap">
+      <PostList posts={posts} />
+    </div>
+  </section>
+</Page>

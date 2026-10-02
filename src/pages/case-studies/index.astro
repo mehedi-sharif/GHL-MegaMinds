@@ -1,0 +1,58 @@
+---
+import Page from '../../layouts/Page.astro';
+import { published } from '../../lib/content';
+
+const studies = (await published('case-studies')).sort((a, b) => a.data.order - b.data.order);
+---
+<Page
+  title="Case Studies"
+  meta_title="Case Studies | GHL Megaminds"
+  description="Real builds, real numbers. What happened after we built and looked after four GoHighLevel accounts."
+>
+  <section class="hero first">
+    <div class="wrap">
+      <div class="eyebrow"><span class="label">Case studies</span></div>
+      <h1>Real builds.<br /><span class="grad">Real numbers.</span></h1>
+      <p class="lede">
+        Here is what happened after we built and looked after four accounts. Names are hidden because clients asked us
+        to. The numbers are theirs.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="work">
+        {studies.map((s) => (
+          <a class={`tile ${s.data.wide ? 'w7' : 'w5'}`} href={`/case-studies/${s.id}`}>
+            <div class="panel" style={`background:${s.data.panel_bg}`}>
+              <div class="wm" style={`color:${s.data.panel_ink}`}>{s.data.panel_label}</div>
+              <div class="pills">
+                {s.data.results.slice(0, 2).map((r) => <span class="pill">{r.value}</span>)}
+              </div>
+            </div>
+            <div class="meta2">
+              <div class="kind">{s.data.num} &middot; {s.data.kind}</div>
+              <h4>{s.data.title}</h4>
+              <p>{s.data.summary}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta">
+        <span class="label">Next step</span>
+        <h2>Want to be the next one?</h2>
+        <p>Tell us what is broken. We will tell you what we would build and what it would cost.</p>
+        <div class="btns">
+          <a class="btn pri" href="/contact">Book a Free Call &rarr;</a>
+          <a class="btn" href="/business-owners">See our plans &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Page>

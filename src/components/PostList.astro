@@ -1,0 +1,28 @@
+---
+// Post rows used on the blog, author, category and tag pages.
+import type { CollectionEntry } from 'astro:content';
+import { monthYear, postAuthors, slugify } from '../lib/content';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  byline?: boolean;
+  exceptAuthor?: string; // on an author page, list only the co-authors
+}
+const { posts, byline = true, exceptAuthor } = Astro.props;
+---
+{posts.map((post) => {
+  const authors = postAuthors(post);
+  const others = exceptAuthor ? authors.filter((n) => slugify(n) !== slugify(exceptAuthor)) : [];
+  return (
+    <a class="post" href={`/blog/${post.id}`}>
+      <div class="meta">{monthYear(post.data.date)}<br />{post.data.categories[0]}</div>
+      <div>
+        <h4>{post.data.title}</h4>
+        {post.data.description && <p>{post.data.description}</p>}
+        {exceptAuthor
+          ? others.length > 0 && <p class="withline">With {others.join(', ')}</p>
+          : byline && authors.length > 0 && <p class="byline">By {authors.join(' & ')}</p>}
+      </div>
+    </a>
+  );
+})}

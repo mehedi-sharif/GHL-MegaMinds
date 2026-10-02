@@ -1,0 +1,11 @@
+---
+import Page from '../layouts/Page.astro';
+import { indexEntry } from '../lib/content';
+import { render } from 'astro:content';
+
+const about = await indexEntry('about');
+const { Content } = await render(about);
+---
+<Page {...about.data}>
+  <Content />
+</Page>

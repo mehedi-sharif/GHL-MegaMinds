@@ -1,0 +1,40 @@
+---
+import Page from '../../layouts/Page.astro';
+import { indexEntry, isByAuthor, published } from '../../lib/content';
+
+const index = await indexEntry('authors');
+const authors = (await published('authors')).sort((a, b) => a.data.order - b.data.order);
+const posts = await published('blog');
+const countFor = (name: string) => posts.filter((p) => isByAuthor(p, name)).length;
+---
+<Page {...index.data}>
+  <section class="hero first">
+    <div class="wrap">
+      <div class="eyebrow"><span class="label">[ Authors ]</span><span class="plus">++++</span></div>
+      <h1>Who writes<br /><span class="grad">this stuff.</span></h1>
+      <p class="lede">The same people who build and look after accounts all day. No ghost writers.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="grid g3">
+        {authors.map((author) => {
+          const n = countFor(author.data.title);
+          return (
+            <a class="card pad hoverable member" href={`/authors/${author.id}`}>
+              {author.data.image && (
+                <div class="ph">
+                  <img src={author.data.image} alt={author.data.title} width="400" height="400" loading="lazy" />
+                </div>
+              )}
+              <h3>{author.data.title}</h3>
+              {author.data.role && <p class="role">{author.data.role}</p>}
+              <p class="yrs"><b>{n}</b> {n === 1 ? 'post' : 'posts'}</p>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</Page>

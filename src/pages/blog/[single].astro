@@ -1,0 +1,65 @@
+---
+import Page from '../../layouts/Page.astro';
+import PostList from '../../components/PostList.astro';
+import BlogCta from '../../components/BlogCta.astro';
+import { monthYear, postAuthors, published, slugify, sortByDate } from '../../lib/content';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await published('blog');
+  return posts.map((post) => ({ params: { single: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { title, date, categories, tags } = post.data;
+const { Content } = await render(post);
+const authors = postAuthors(post);
+const more = sortByDate(await published('blog')).filter((p) => p.id !== post.id).slice(0, 3);
+---
+<Page {...post.data}>
+  <section class="hero first">
+    <div class="wrap">
+      <div class="eyebrow">
+        <a class="label ulink" href={`/categories/${slugify(categories[0])}`}>[ {categories[0]} ]</a>
+        <span class="plus">++++</span>
+      </div>
+      <h1>{title}</h1>
+      <p class="lede">
+        {monthYear(date)}
+        {authors.length > 0 && (
+          <>
+            {' · '}
+            {authors.map((name, i) => (
+              <>
+                <a class="ulink" href={`/authors/${slugify(name)}`}>{name}</a>
+                {i !== authors.length - 1 && ' & '}
+              </>
+            ))}
+          </>
+        )}
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="legal">
+        <Content />
+      </div>
+      <div class="chips" style="margin-top:40px">
+        {tags.map((t) => <a class="btn" href={`/tags/${slugify(t)}`}>#{t}</a>)}
+      </div>
+    </div>
+  </section>
+
+  {more.length > 0 && (
+    <section>
+      <div class="wrap">
+        <div class="sechead"><span class="label">Keep reading</span><h2>More posts.</h2></div>
+        <PostList posts={more} byline={false} />
+      </div>
+    </section>
+  )}
+
+  <BlogCta />
+</Page>

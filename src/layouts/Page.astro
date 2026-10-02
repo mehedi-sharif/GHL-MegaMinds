@@ -1,0 +1,23 @@
+---
+// Shell for the content pages carried over from the v1 site. Uses the same
+// Layout, Header and Footer as the homepage; the v1 section styles live in
+// pages.css and only load on pages that use this shell.
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/pages.css';
+
+interface Props {
+  title: string;
+  meta_title?: string;
+  description?: string;
+}
+const { title, meta_title, description } = Astro.props;
+---
+<Layout title={meta_title ?? `${title} | GHL Megaminds`} description={description}>
+  <Header />
+  <main id="main-content" class="v1">
+    <slot />
+  </main>
+  <Footer />
+</Layout>

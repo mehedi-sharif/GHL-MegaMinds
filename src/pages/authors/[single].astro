@@ -1,0 +1,72 @@
+---
+import Page from '../../layouts/Page.astro';
+import PostList from '../../components/PostList.astro';
+import { isByAuthor, postAuthors, published, slugify, sortByDate } from '../../lib/content';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const authors = await published('authors');
+  return authors.map((author) => ({ params: { single: author.id }, props: { author } }));
+}
+
+const { author } = Astro.props;
+const { title, image, role, social } = author.data;
+const { Content } = await render(author);
+
+const posts = sortByDate(await published('blog')).filter((p) => isByAuthor(p, title));
+// everyone else who appears on this author's posts
+const coAuthors = [...new Set(posts.flatMap(postAuthors).filter((n) => slugify(n) !== slugify(title)))];
+// only real profile links (v1 content has "#" placeholders)
+const links = (social ?? []).filter((s) => s?.link && /^https?:\/\//.test(s.link));
+---
+<Page {...author.data}>
+  <section class="hero first">
+    <div class="wrap">
+      <div class="authorhead">
+        {image && (
+          <div class="authorph"><img src={image} alt={title} width="240" height="240" /></div>
+        )}
+        <div>
+          <div class="eyebrow"><span class="label">Author</span><span class="plus">++++</span></div>
+          <h1>{title}</h1>
+          {role && <p class="authorrole">{role}</p>}
+          <div class="authorbio"><Content /></div>
+          {links.length > 0 && (
+            <div class="btns" style="margin-top:26px">
+              {links.map((s) => (
+                <a class="btn" href={s!.link} target="_blank" rel="noopener noreferrer">{s!.name ?? s!.link}</a>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sechead">
+        <span class="label">Writing</span>
+        <h2>{posts.length === 0 ? 'No posts yet.' : posts.length === 1 ? 'One post.' : `${posts.length} posts.`}</h2>
+      </div>
+      {posts.length > 0 ? (
+        <PostList posts={posts} exceptAuthor={title} />
+      ) : (
+        <p class="muted">
+          Nothing published under this name yet. Read <a href="/blog" class="ulink">everything on the blog</a> instead.
+        </p>
+      )}
+    </div>
+  </section>
+
+  {coAuthors.length > 0 && (
+    <section>
+      <div class="wrap">
+        <div class="sechead"><span class="label">Also writes with</span><h2>The rest of the team.</h2></div>
+        <div class="btns" style="margin-top:0">
+          {coAuthors.map((name) => <a class="btn" href={`/authors/${slugify(name)}`}>{name} &rarr;</a>)}
+        </div>
+      </div>
+    </section>
+  )}
+</Page>

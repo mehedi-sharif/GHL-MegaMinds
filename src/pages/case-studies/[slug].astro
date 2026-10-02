@@ -1,0 +1,57 @@
+---
+import Page from '../../layouts/Page.astro';
+import { published } from '../../lib/content';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const studies = (await published('case-studies')).sort((a, b) => a.data.order - b.data.order);
+  return studies.map((study, i) => ({
+    params: { slug: study.id },
+    // wrap around so there is always a next one to read
+    props: { study, next: studies[(i + 1) % studies.length] },
+  }));
+}
+
+const { study, next } = Astro.props;
+const { title, description, num, kind, results } = study.data;
+const { Content } = await render(study);
+---
+<Page {...study.data}>
+  <section class="hero first">
+    <div class="wrap">
+      <div class="eyebrow">
+        <span class="label">{num}</span><span class="plus">++++</span><span class="label">{kind}</span>
+      </div>
+      <h1>{title}</h1>
+      {description && <p class="lede">{description}</p>}
+      {results.length > 0 && (
+        <div class="csresults">
+          {results.map((r) => (
+            <div class="csresult">
+              <div class="big">{r.value}</div>
+              <p>{r.label}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <Content />
+
+  <section>
+    <div class="wrap">
+      <div class="csnext">
+        <div>
+          <span class="label">Read next</span>
+          <h3><a href={`/case-studies/${next.id}`}>{next.data.title}</a></h3>
+          <p>{next.data.summary}</p>
+        </div>
+        <div class="btns">
+          <a class="btn" href="/case-studies">All case studies &rarr;</a>
+          <a class="btn pri" href="/contact">Book a Free Call &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Page>

@@ -1,0 +1,17 @@
+---
+import Page from '../../layouts/Page.astro';
+import { taxonomy } from '../../lib/content';
+
+const terms = (await taxonomy('tags')).sort((a, b) => a.name.localeCompare(b.name));
+---
+<Page title="Tags" meta_title="Tags | GHL Megaminds blog" description="Browse every GHL Megaminds blog post by tag.">
+  <section class="hero first">
+    <div class="wrap">
+      <div class="eyebrow"><span class="label">[ Blog ]</span><span class="plus">++++</span></div>
+      <h1>Tags</h1>
+      <div class="chips" style="margin-top:34px">
+        {terms.map((t) => <a class="btn" href={`/tags/${t.slug}`}>{t.name} <span class="dim">{t.count}</span></a>)}
+      </div>
+    </div>
+  </section>
+</Page>

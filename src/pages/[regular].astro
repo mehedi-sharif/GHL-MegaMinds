@@ -1,0 +1,16 @@
+---
+import Page from '../layouts/Page.astro';
+import { published } from '../lib/content';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const pages = await published('pages');
+  return pages.map((page) => ({ params: { regular: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+---
+<Page {...page.data}>
+  <Content />
+</Page>

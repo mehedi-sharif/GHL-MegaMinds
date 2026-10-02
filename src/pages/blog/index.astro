@@ -1,0 +1,26 @@
+---
+import Page from '../../layouts/Page.astro';
+import PostList from '../../components/PostList.astro';
+import BlogCta from '../../components/BlogCta.astro';
+import { indexEntry, published, sortByDate } from '../../lib/content';
+
+const blog = await indexEntry('blog');
+const posts = sortByDate(await published('blog'));
+---
+<Page {...blog.data}>
+  <section class="hero first">
+    <div class="wrap">
+      <div class="eyebrow"><span class="label">[ Blog ]</span><span class="plus">++++</span></div>
+      <h1>Short reads on<br /><span class="grad">making GoHighLevel work.</span></h1>
+      <p class="lede">We write the things we say on calls all day. Small posts, plain words, one idea each.</p>
+    </div>
+  </section>
+
+  <section class="first">
+    <div class="wrap">
+      <PostList posts={posts} />
+    </div>
+  </section>
+
+  <BlogCta />
+</Page>
