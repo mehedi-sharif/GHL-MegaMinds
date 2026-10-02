@@ -1,36 +1,97 @@
 ---
-import Base from "@/layouts/Base.astro";
-import { getListPage } from "@/lib/contentParser.astro";
-import { ORG_ID, canonicalUrl } from "@/lib/seo";
-import { render } from "astro:content";
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import Button from '../components/Button.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { BOOKING_URL, bookingCalendar as cal, contactForm as form } from '../data/site';
 
-const contactIndex = await getListPage("contact", "-index");
-const { title, description, meta_title, image } = contactIndex.data;
-const { Content } = await render(contactIndex);
-
-const schema = [
-  {
-    "@type": "ContactPage",
-    "@id": `${canonicalUrl("/contact")}#webpage`,
-    url: canonicalUrl("/contact"),
-    name: contactIndex.data.meta_title || contactIndex.data.title,
-    description: contactIndex.data.description,
-    mainEntity: { "@id": ORG_ID },
-  },
-];
-
-const buildDrafts = process.argv.includes("--buildDrafts");
-if (!buildDrafts && contactIndex.data.draft) {
-  return Astro.redirect("/404");
-}
+const formSrc = !form.webhookUrl && form.id && `${form.host}/widget/form/${form.id}`;
+const calendarSrc = `${cal.host}/widget/booking/${cal.id}`;
 ---
-
-<Base
-  title={title}
-  meta_title={meta_title}
-  description={description}
-  image={image}
-  schema={schema}
+<Layout
+  title="Contact | GHL Megaminds"
+  description="Tell us about your HighLevel agency. Certified admins and software engineers for onboarding, support, and custom GHL development."
 >
-  <Content />
-</Base>
+  <Header />
+  <main id="main-content" class="relative overflow-hidden">
+    <div class="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[1100px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(252,192,0,0.08),transparent)]" aria-hidden="true"></div>
+
+    <section class="relative mx-auto grid max-w-7xl gap-12 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-16 lg:px-8 lg:pt-24 lg:pb-28">
+      <!-- Intro + contact form -->
+      <div class="flex min-w-0 flex-col gap-7">
+        <Eyebrow class="self-start">Contact</Eyebrow>
+        <h1 class="text-5xl leading-[1.02] tracking-[-0.03em] sm:text-6xl lg:text-[64px]">
+          Let's talk about <span class="text-muted italic">your agency.</span>
+        </h1>
+        <p class="max-w-[520px] text-lg leading-relaxed text-muted">
+          Tell us where you're stuck (onboarding, daily support, or a custom build) and we'll come back with a clear plan.
+        </p>
+
+        <div class="flex flex-col gap-4 border-t border-hair pt-7">
+          <p class="text-xs font-semibold uppercase tracking-widest text-muted">What happens next</p>
+          <div class="rounded-[28px] border border-hair bg-card p-2 sm:p-3">
+            {form.webhookUrl ? (
+              <ContactForm webhookUrl={form.webhookUrl} />
+            ) : formSrc ? (
+              <iframe
+                src={formSrc}
+                style={`width:100%;height:${form.height}px;border:none;border-radius:20px`}
+                id={`inline-${form.id}`}
+                data-layout="{'id':'INLINE'}"
+                data-trigger-type="alwaysShow"
+                data-trigger-value=""
+                data-activation-type="alwaysActivated"
+                data-activation-value=""
+                data-deactivation-type="neverDeactivate"
+                data-deactivation-value=""
+                data-form-name={form.name}
+                data-height={form.height}
+                data-layout-iframe-id={`inline-${form.id}`}
+                data-form-id={form.id}
+                data-cookie-consent="true"
+                data-cookie-consent-provider="auto"
+                title={form.name}
+                class="block"
+              ></iframe>
+            ) : (
+              <div class="flex flex-col items-center gap-4 rounded-[20px] bg-surface px-6 py-10 text-center">
+                <p class="leading-relaxed text-muted">Prefer to talk it through? Book a time on the calendar.</p>
+                <Button href={BOOKING_URL} arrow>Book a discovery call</Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking calendar -->
+      <div class="min-w-0 overflow-hidden rounded-[28px] border border-hair bg-card p-2 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.8)] sm:p-3 lg:sticky lg:top-28">
+        <iframe
+          src={calendarSrc}
+          allow="payment"
+          style="width:100%;border:none;overflow:hidden;border-radius:20px"
+          scrolling="no"
+          id={cal.iframeId}
+          title="Book a discovery call"
+          class="block min-h-[640px]"
+        ></iframe>
+      </div>
+    </section>
+  </main>
+  <Footer />
+
+  <!-- One GHL embed script sizes both the form and the calendar -->
+  <script is:inline src={`${cal.host}/js/form_embed.js`}></script>
+  <script is:inline define:vars={{ frameIds: [formSrc ? `inline-${form.id}` : '', cal.iframeId].filter(Boolean) }}>
+    // GHL's embed keeps an iframe hidden until it reports its height.
+    // If that handshake never arrives, reveal it anyway.
+    setTimeout(() => {
+      for (const id of frameIds) {
+        const f = document.getElementById(id);
+        if (!f || getComputedStyle(f).visibility !== 'hidden') continue;
+        Object.assign(f.style, { visibility: 'visible', opacity: '1', pointerEvents: 'auto', position: 'relative', left: '' });
+      }
+    }, 4000);
+  </script>
+</Layout>

@@ -1,0 +1,25 @@
+---
+import Eyebrow from './Eyebrow.astro';
+import Button from './Button.astro';
+import { BOOKING_URL, trust } from '../data/site';
+---
+<section id="book" class="px-4 pb-16 sm:px-6 lg:px-8 lg:pb-20">
+  <div data-reveal class="mx-auto flex max-w-7xl flex-col items-center gap-6 rounded-[32px] border border-hair bg-deep px-6 py-16 text-center sm:px-12 lg:py-24">
+    <Eyebrow>Ready to Scale?</Eyebrow>
+    <h2 class="max-w-[980px] text-4xl leading-[1.04] tracking-tight sm:text-6xl lg:text-[68px]">
+      Ready to plug certified HighLevel experts <span class="text-brand italic">into your agency?</span>
+    </h2>
+    <p class="max-w-[620px] text-lg leading-relaxed text-muted lg:text-[19px]">
+      Partner with GHL Megaminds to handle implementation and daily support. Scale with confidence.
+    </p>
+    <Button href={BOOKING_URL} size="lg" arrow class="mt-2">Book a discovery call</Button>
+    <ul class="mt-2 flex flex-col gap-3 sm:flex-row sm:gap-8">
+      {trust.map((item) => (
+        <li class="flex items-center justify-center gap-2.5 text-[15px] font-medium text-muted">
+          <svg class="size-[18px] text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+          {item}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,70 @@
+---
+import Button from './Button.astro';
+import { BOOKING_URL, offers } from '../data/site';
+---
+<section id="offers" class="bg-deep py-16 lg:py-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div data-reveal class="flex flex-col items-center gap-5 text-center">
+      <span class="flex h-9 items-center rounded-full border border-gold/40 bg-gold/10 px-4 text-sm font-semibold text-gold">Launch offer · 40% off</span>
+      <h2 class="text-5xl leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
+        Offload the tech.<br /><span class="text-muted italic">Keep the margins.</span>
+      </h2>
+      <p class="max-w-[620px] text-lg leading-relaxed text-muted lg:text-[19px]">
+        Plug certified HighLevel specialists and full-stack devs into your agency starting tomorrow.
+      </p>
+    </div>
+
+    <div data-reveal-stagger class="mt-12 grid gap-6 lg:mt-14 lg:grid-cols-3">
+      {offers.map((o) => (
+        <article class:list={[
+          'relative flex min-w-0 flex-col gap-6 rounded-[28px] border p-6 sm:p-8 lg:p-9',
+          o.featured
+            ? 'border-gold/40 bg-card shadow-[0_0_0_1px_rgba(252,192,0,0.08),0_30px_80px_-30px_rgba(252,192,0,0.25)]'
+            : 'border-hair bg-surface',
+        ]}>
+          {o.featured && (
+            <span class="absolute -top-3.5 left-8 flex h-7 items-center rounded-full bg-gold px-3 text-xs font-semibold text-on-brand lg:left-9">{o.featured}</span>
+          )}
+          <div class="flex flex-col gap-3">
+            <p class="text-xs font-semibold uppercase tracking-widest text-muted">{o.kicker}</p>
+            <h3 class="text-[32px] leading-tight tracking-tight lg:text-[34px]">{o.title}</h3>
+            <p class="leading-relaxed text-muted">{o.desc}</p>
+          </div>
+
+          <div class="flex flex-col gap-2 border-y border-hair py-5">
+            <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+              <span class="font-serif text-5xl leading-none tracking-tight sm:text-6xl">{o.price}</span>
+              <span class="text-muted">/month</span>
+              <span class="ml-auto text-muted line-through" aria-label={`Regular price ${o.regular}`}>{o.regular}</span>
+            </div>
+            <p class="text-sm leading-normal text-muted">{o.terms}</p>
+          </div>
+
+          <ul class="flex grow flex-col gap-3">
+            {o.features.map((f) => (
+              <li class="flex items-start gap-3 text-[15.5px] leading-snug">
+                <span class="mt-px flex size-5 shrink-0 items-center justify-center rounded-full bg-gold/12 text-gold">
+                  <svg class="size-[11px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+                </span>
+                {f}
+              </li>
+            ))}
+          </ul>
+
+          <Button href={BOOKING_URL} variant={o.featured ? 'brand' : 'outline'} class="w-full">Book a discovery call</Button>
+        </article>
+      ))}
+    </div>
+
+    <!-- Guarantee -->
+    <div data-reveal class="mx-auto mt-14 max-w-4xl rounded-[32px] border border-hair bg-surface p-8 text-center sm:p-12">
+      <div class="mx-auto mb-5 flex size-14 items-center justify-center rounded-full bg-green/12 text-green ring-1 ring-green/30">
+        <svg class="size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+      </div>
+      <h3 class="mb-3 text-2xl sm:text-3xl">7-Day 100% Money-Back Guarantee</h3>
+      <p class="mx-auto max-w-2xl leading-relaxed text-muted">
+        If you feel we cannot deliver the quality, speed, and technical precision we promise within your first 7 days, you get a full refund. No questions asked.
+      </p>
+    </div>
+  </div>
+</section>

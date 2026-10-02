@@ -1,0 +1,86 @@
+---
+import Eyebrow from './Eyebrow.astro';
+import Button from './Button.astro';
+import { BOOKING_URL, solutions, offers } from '../data/site';
+
+const [engineering, cost, attention] = solutions;
+const amounts = offers.map((o) => Number(o.price.replace(/\D/g, '')));
+const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
+const priceRange = `${usd(Math.min(...amounts))}–${usd(Math.max(...amounts))}`;
+const flow = ['Form submitted', 'Webhook → middleware', 'Enrich via API', 'Update GHL contact'];
+---
+<section class="bg-deep py-16 lg:py-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div data-reveal class="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
+      <div class="flex flex-col items-start gap-5">
+        <Eyebrow>The solution</Eyebrow>
+        <h2 class="text-4xl leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">
+          White-label HighLevel support by certified admins <span class="text-muted italic">and software engineers.</span>
+        </h2>
+      </div>
+      <div class="flex flex-col gap-5 lg:pt-12">
+        <p class="text-lg leading-relaxed text-muted">
+          We spent the last 10+ years building software, web applications, custom platforms, and real digital solutions for global businesses. Now, we bring elite software engineering capabilities exclusively to the GoHighLevel ecosystem.
+        </p>
+        <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+          <Button href={BOOKING_URL} variant="solid">Partner with us</Button>
+          <Button href="#offers" variant="outline" arrow>See our offers</Button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bento grid -->
+    <div data-reveal-stagger class="mt-12 grid gap-5 lg:mt-16 lg:grid-cols-2 lg:grid-rows-2">
+      <!-- Large: engineering -->
+      <article class="flex min-w-0 flex-col gap-6 overflow-hidden rounded-3xl border border-hair bg-card p-6 sm:p-8 lg:row-span-2">
+        <div class="flex flex-col gap-3">
+          <span class="text-xs font-semibold uppercase tracking-widest text-gold">{engineering.n} · Engineering</span>
+          <h3 class="text-3xl leading-tight tracking-tight sm:text-[34px]">{engineering.title}</h3>
+          <p class="leading-relaxed text-muted">{engineering.body}</p>
+        </div>
+        <div class="mt-auto rounded-2xl border border-hair bg-surface p-4 sm:p-5" aria-hidden="true">
+          <div class="mb-4 flex items-center justify-between text-xs text-muted">
+            <span class="font-semibold uppercase tracking-widest">Custom workflow</span>
+            <span class="flex items-center gap-1.5"><span class="size-1.5 rounded-full bg-green"></span>Live</span>
+          </div>
+          <ol class="flex flex-col">
+            {flow.map((step, i) => (
+              <li class="relative flex items-center gap-3 pb-4 last:pb-0">
+                {i < flow.length - 1 && <span class="absolute top-7 left-[13px] h-[calc(100%-20px)] w-px bg-hair"></span>}
+                <span class:list={[
+                  'flex size-7 shrink-0 items-center justify-center rounded-lg border text-xs font-semibold',
+                  i === 1 ? 'border-gold/50 bg-gold/15 text-gold' : 'border-hair bg-card text-muted',
+                ]}>{i + 1}</span>
+                <span class="grow rounded-lg border border-hair bg-card px-3 py-2 text-sm">{step}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </article>
+
+      <!-- Cost -->
+      <article class="flex min-w-0 flex-col gap-4 rounded-3xl border border-hair bg-card p-6 sm:p-8">
+        <span class="text-xs font-semibold uppercase tracking-widest text-gold">{cost.n} · Pricing</span>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <h3 class="max-w-sm text-[26px] leading-tight tracking-tight sm:text-[28px]">{cost.title}</h3>
+          <p class="shrink-0 font-serif text-4xl tracking-tight">{priceRange}<span class="ml-1 font-sans text-base text-muted">/mo</span></p>
+        </div>
+        <p class="leading-relaxed text-muted">{cost.body}</p>
+      </article>
+
+      <!-- Attention -->
+      <article class="flex min-w-0 flex-col gap-4 rounded-3xl border border-hair bg-card p-6 sm:p-8">
+        <span class="text-xs font-semibold uppercase tracking-widest text-gold">{attention.n} · Partnership</span>
+        <h3 class="text-[26px] leading-tight tracking-tight sm:text-[28px]">{attention.title}</h3>
+        <p class="leading-relaxed text-muted">{attention.body}</p>
+        <div class="mt-auto flex items-center gap-3 rounded-2xl border border-hair bg-surface p-3" aria-hidden="true">
+          <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-bold text-on-brand">GM</span>
+          <div class="min-w-0 grow">
+            <p class="text-sm font-semibold">#client-support <span class="ml-1 font-normal text-muted">· just now</span></p>
+            <p class="truncate text-sm text-muted">Fixed the broken trigger and re-ran the workflow for all 42 contacts.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

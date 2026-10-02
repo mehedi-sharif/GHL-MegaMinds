@@ -1,64 +1,33 @@
 ---
-import Base from "@/layouts/Base.astro";
-import { getListPage } from "@/lib/contentParser.astro";
-import { ORG_ID, SITE } from "@/lib/seo";
-import { render } from "astro:content";
-
-const homepage = await getListPage("homepage", "-index");
-const { title, meta_title, description, image } = homepage.data;
-const { Content } = await render(homepage);
-
-// What the business actually sells, in a form answer engines can quote.
-const schema = [
-  {
-    "@type": "ProfessionalService",
-    "@id": `${SITE.url}/#service`,
-    name: "GoHighLevel setup, rescue and management",
-    url: `${SITE.url}/`,
-    provider: { "@id": ORG_ID },
-    parentOrganization: { "@id": ORG_ID },
-    areaServed: "Worldwide",
-    availableLanguage: ["English"],
-    serviceType: "GoHighLevel implementation and management",
-    description:
-      "Done-for-you GoHighLevel work: account setup and builds, fixing broken accounts, SaaS Mode for resellers, white label client onboarding, and ongoing monthly care.",
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "GHL Megaminds services",
-      itemListElement: [
-        {
-          "@type": "OfferCatalog",
-          name: "For business owners",
-          url: `${SITE.url}/business-owners`,
-          itemListElement: [
-            { "@type": "Offer", itemOffered: { "@type": "Service", name: "GoHighLevel account build" } },
-            { "@type": "Offer", itemOffered: { "@type": "Service", name: "Broken account rescue and audit" } },
-            { "@type": "Offer", itemOffered: { "@type": "Service", name: "Monthly maintenance and care" } },
-          ],
-        },
-        {
-          "@type": "OfferCatalog",
-          name: "For resellers",
-          url: `${SITE.url}/resellers`,
-          itemListElement: [
-            { "@type": "Offer", itemOffered: { "@type": "Service", name: "SaaS Mode setup from scratch" } },
-            { "@type": "Offer", itemOffered: { "@type": "Service", name: "Fixing an existing SaaS account" } },
-            { "@type": "Offer", itemOffered: { "@type": "Service", name: "White label client onboarding" } },
-          ],
-        },
-      ],
-    },
-  },
-];
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import StackStrip from '../components/StackStrip.astro';
+import Problem from '../components/Problem.astro';
+import Solution from '../components/Solution.astro';
+import Proof from '../components/Proof.astro';
+import Team from '../components/Team.astro';
+import Offers from '../components/Offers.astro';
+import Testimonial from '../components/Testimonial.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import Projects from '../components/Projects.astro';
+import FinalCta from '../components/FinalCta.astro';
+import Footer from '../components/Footer.astro';
 ---
-
-<Base
-  title={title}
-  meta_title={meta_title}
-  description={description}
-  image={image}
-  schema={schema}
-  noBreadcrumb
->
-  <Content />
-</Base>
+<Layout>
+  <Header />
+  <main id="main-content">
+    <Hero />
+    <StackStrip />
+    <Problem />
+    <Solution />
+    <Proof />
+    <Team />
+    <Offers />
+    <Testimonial />
+    <HowItWorks />
+    <Projects />
+    <FinalCta />
+  </main>
+  <Footer />
+</Layout>

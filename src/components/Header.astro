@@ -1,0 +1,60 @@
+---
+import Logo from './Logo.astro';
+import Button from './Button.astro';
+import { nav, BOOKING_URL } from '../data/site';
+---
+<header id="site-header" class="group sticky top-0 z-40 border-b border-transparent bg-canvas/60 backdrop-blur-md transition-[background-color,border-color] duration-300 data-scrolled:border-hair data-scrolled:bg-canvas/85">
+  <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 transition-[height] duration-300 sm:px-6 lg:h-[84px] lg:px-8 lg:group-data-scrolled:h-[68px]">
+    <a href="/" aria-label="GHL Megaminds home"><Logo /></a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-10 text-[15px] font-medium lg:flex">
+      {nav.map((item) => (
+        <a href={item.href} class="text-ink/90 transition hover:text-gold">{item.label}</a>
+      ))}
+    </nav>
+
+    <div class="hidden lg:block">
+      <Button href={BOOKING_URL} variant="solid" arrow>Book a discovery call</Button>
+    </div>
+
+    <!-- Mobile menu -->
+    <button
+      id="menu-toggle"
+      type="button"
+      class="flex size-11 items-center justify-center rounded-full border border-hair lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+    >
+      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-hair bg-canvas px-4 pb-6 sm:px-6 lg:hidden">
+    <nav aria-label="Mobile" class="flex flex-col py-2">
+      {nav.map((item) => (
+        <a href={item.href} class="border-b border-hair py-4 text-lg font-medium text-ink">{item.label}</a>
+      ))}
+    </nav>
+    <Button href={BOOKING_URL} class="mt-4 w-full" arrow>Book a discovery call</Button>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const onScroll = () => header?.toggleAttribute('data-scrolled', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  if (toggle && menu) {
+    const setOpen = (open: boolean) => {
+      menu.classList.toggle('hidden', !open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+    toggle.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  }
+</script>

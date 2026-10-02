@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* Design tokens — GHL Video palette */
+@theme {
+  --color-canvas: #08090d;   /* page background */
+  --color-deep: #030303;     /* darker bands */
+  --color-surface: #111219;  /* panels */
+  --color-card: #161821;     /* cards */
+  --color-hair: #2b2f40;     /* borders */
+  --color-ink: #eef0f6;      /* headings / primary text */
+  --color-muted: #9096a8;    /* body text */
+  --color-dim: #7d8499;
+  --color-gold: #fcc000;
+  --color-green: #00cc00;
+  --color-blue: #0090fc;
+  --color-on-brand: #08090d; /* text on gold/green */
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader", Georgia, serif;
+}
+
+/* Brand gradient fill (buttons, badges) */
+@utility bg-brand {
+  background-image: linear-gradient(100deg, var(--color-gold), var(--color-green));
+}
+
+/* Brand gradient text (highlighted words in headings) */
+@utility text-brand {
+  background-image: linear-gradient(100deg, var(--color-gold), var(--color-green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Infinite logo ticker (StackStrip). Track holds two copies; shift by one copy + gap. */
+@keyframes marquee {
+  to { transform: translateX(calc(-50% - 5px)); }
+}
+.marquee-track {
+  animation: marquee 40s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* Scroll reveal. Only active once JS adds .js to <html>, so content is never
+   hidden without JS. Children of [data-reveal-stagger] get an index (--i). */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero checklist: ticks pop in one by one, progress bar fills. */
+@keyframes tick-pop {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes bar-fill {
+  from { width: 0; }
+}
+.tick-pop {
+  animation: tick-pop 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+  animation-delay: calc(500ms + var(--i, 0) * 260ms);
+}
+.bar-fill {
+  animation: bar-fill 1.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1; transform: none; transition: none; }
+  .tick-pop, .bar-fill { animation: none; }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+  }
+  h1, h2, h3 {
+    @apply font-serif font-normal;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+  }
+}

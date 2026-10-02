@@ -1,0 +1,21 @@
+---
+import { stack } from '../data/site';
+---
+<section aria-label="Tools we work with" class="border-y border-hair bg-surface">
+  <div class="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-7 sm:px-6 lg:flex-row lg:items-center lg:gap-10 lg:px-8">
+    <p class="shrink-0 text-xs font-semibold leading-relaxed tracking-widest text-muted lg:w-52">
+      WE PLUG INTO THE STACK YOU ALREADY RUN
+    </p>
+    <div class="marquee relative min-w-0 grow overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
+      <div class="marquee-track flex w-max gap-2.5">
+        {[0, 1].map((copy) => (
+          <ul class="flex shrink-0 gap-2.5" aria-hidden={copy === 1 ? 'true' : undefined}>
+            {stack.map((t) => (
+              <li class="flex h-10 items-center whitespace-nowrap rounded-full border border-hair bg-canvas px-4 text-[15px] font-medium text-ink/85">{t}</li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

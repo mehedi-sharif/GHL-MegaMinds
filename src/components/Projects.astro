@@ -1,0 +1,90 @@
+---
+import Eyebrow from './Eyebrow.astro';
+import ProjectPreview from './ProjectPreview.astro';
+import { projects } from '../data/site';
+import { hasPublicFile } from '../lib/assets';
+
+const INITIAL = 6; // cards visible before "Load more"
+---
+<section id="projects" class="py-16 lg:py-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div data-reveal class="mb-8 max-w-3xl sm:mb-10">
+      <Eyebrow class="mb-5">Projects we built</Eyebrow>
+      <h2 class="text-4xl leading-[1.08] tracking-tight sm:text-5xl lg:text-[54px]">
+        Built for <span class="text-muted italic">GoHighLevel agencies.</span>
+      </h2>
+    </div>
+
+    <div data-reveal-stagger class="grid items-stretch gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {projects.map((p, i) => (
+        <article
+          class:list={[
+            'project-item group flex flex-col overflow-hidden rounded-[28px] border border-hair bg-surface shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-xl',
+            i >= INITIAL && 'hidden',
+          ]}
+        >
+          {p.image && hasPublicFile(p.image) ? (
+            <div class="relative h-56 overflow-hidden bg-[radial-gradient(circle_at_top,#1b1e2b_0%,#0b0d14_70%)] px-5 pt-7">
+              <div class="overflow-hidden rounded-t-xl border border-b-0 border-white/10 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:-translate-y-1">
+                <div class="flex h-6 items-center gap-1.5 bg-[#1a1c26] px-3" aria-hidden="true">
+                  <span class="size-2 rounded-full bg-white/20"></span><span class="size-2 rounded-full bg-white/20"></span><span class="size-2 rounded-full bg-white/20"></span>
+                </div>
+                <img src={p.image} alt={`${p.title} screenshot`} width="960" height="600" loading="lazy" decoding="async" class="block w-full" />
+              </div>
+            </div>
+          ) : (
+            <ProjectPreview kind={p.preview} />
+          )}
+          <div class="flex grow flex-col items-start p-6 sm:p-7">
+            <div class="mb-4 flex w-full items-start justify-between gap-3">
+              <span class="rounded-full border border-gold/30 bg-gold/8 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-gold">{p.type}</span>
+              {p.downloads !== undefined && (
+                <span class="inline-flex items-center gap-1 rounded-full border border-hair bg-canvas px-2 py-1 text-[10px] font-medium text-muted" title="Installs">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="size-3"><path d="M12 3v10m0 0 4-4m-4 4-4-4M4 17.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  {p.downloads}
+                  <span class="sr-only">installs</span>
+                </span>
+              )}
+            </div>
+            <h3 class="mb-3 text-3xl leading-[1.1] tracking-tight sm:text-[2rem]">{p.title}</h3>
+            <p class="mb-6 grow leading-relaxed text-muted">{p.body}</p>
+            {p.cta ? (
+              <a
+                href={p.cta.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-hair bg-canvas px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink hover:bg-ink hover:text-canvas"
+              >
+                {p.cta.label} <span aria-hidden="true">→</span>
+              </a>
+            ) : (
+              <span class="inline-flex cursor-not-allowed items-center justify-center rounded-full border border-hair bg-canvas px-4 py-2.5 text-sm font-semibold text-dim">
+                {p.comingSoon ? 'Coming Soon' : ''}
+              </span>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {projects.length > INITIAL && (
+      <div class="mt-8 flex justify-center">
+        <button
+          id="load-more-projects"
+          type="button"
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-hair bg-surface px-5 py-2.5 text-sm font-semibold text-ink shadow-sm transition hover:bg-card"
+        >
+          Load more
+        </button>
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  const btn = document.getElementById('load-more-projects');
+  btn?.addEventListener('click', () => {
+    document.querySelectorAll('#projects .project-item.hidden').forEach((el) => el.classList.remove('hidden'));
+    btn.parentElement?.remove();
+  });
+</script>

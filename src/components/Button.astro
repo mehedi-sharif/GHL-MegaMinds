@@ -1,0 +1,36 @@
+---
+// Pill button rendered as a link.
+// variant: "brand" (gold→green fill) | "outline" (light border) | "solid" (light fill)
+interface Props {
+  href: string;
+  variant?: 'brand' | 'outline' | 'solid';
+  size?: 'md' | 'lg';
+  arrow?: boolean;
+  class?: string;
+}
+const { href, variant = 'brand', size = 'md', arrow = false, class: className = '' } = Astro.props;
+const external = href.startsWith('http');
+
+const variants = {
+  brand: 'bg-brand text-on-brand hover:brightness-110',
+  outline: 'border border-hair text-ink hover:border-muted hover:bg-white/5',
+  solid: 'bg-ink text-canvas hover:bg-white',
+};
+const sizes = {
+  md: 'h-12 px-6 text-[15px]',
+  lg: 'h-14 px-7 text-base sm:h-[58px] sm:px-8 sm:text-[17px]',
+};
+---
+<a
+  href={href}
+  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+  class:list={[
+    'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition',
+    variants[variant], sizes[size], className,
+  ]}
+>
+  <slot />
+  {arrow && (
+    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+  )}
+</a>

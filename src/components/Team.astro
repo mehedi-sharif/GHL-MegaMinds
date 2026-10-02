@@ -1,0 +1,57 @@
+---
+import Eyebrow from './Eyebrow.astro';
+import { team } from '../data/site';
+import { hasPublicFile, initials } from '../lib/assets';
+---
+<section id="team" class="py-16 lg:py-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div data-reveal class="grid gap-8 lg:grid-cols-2 lg:items-end lg:gap-20">
+      <div class="flex flex-col items-start gap-5">
+        <Eyebrow>Meet the team</Eyebrow>
+        <h2 class="text-4xl leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">
+          You're in <span class="text-muted italic">experienced hands.</span>
+        </h2>
+      </div>
+      <p class="text-lg leading-relaxed text-muted lg:text-[19px]">
+        Your client accounts are configured by certified admins, extended by software engineers, and launched by technical builders and marketers.
+      </p>
+    </div>
+
+    <div data-reveal-stagger class="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3">
+      {team.map((m) => (
+        <article class="flex flex-col gap-5">
+          <div class="relative h-[400px] overflow-hidden rounded-3xl border border-hair bg-card">
+            {hasPublicFile(m.photo) ? (
+              <img
+                src={m.photo}
+                alt={m.alt}
+                width="600"
+                height="800"
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover object-top"
+              />
+            ) : (
+              <div class="flex h-full items-center justify-center bg-[radial-gradient(circle_at_50%_30%,rgba(252,192,0,0.10),transparent_60%)]" role="img" aria-label={m.alt}>
+                <span class="flex size-32 items-center justify-center rounded-full border border-hair bg-surface font-serif text-5xl tracking-tight text-ink/80">{initials(m.name)}</span>
+              </div>
+            )}
+            {m.certified && (
+              <span class="absolute top-4 left-4 flex h-8 items-center gap-2 rounded-full bg-canvas/90 px-3 text-[13px] font-semibold backdrop-blur">
+                <svg class="size-[15px] text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z" /><path d="m9 12 2 2 4-4" /></svg>
+                Certified Admin
+              </span>
+            )}
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="text-3xl tracking-tight">{m.name}</h3>
+              <p class="mt-1 text-muted">{m.role}</p>
+            </div>
+            <span class="flex h-8 shrink-0 items-center rounded-full border border-hair px-3 text-xs font-semibold">{m.years} yrs</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

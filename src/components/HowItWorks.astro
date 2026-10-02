@@ -1,0 +1,44 @@
+---
+import Eyebrow from './Eyebrow.astro';
+import Button from './Button.astro';
+import { BOOKING_URL, steps } from '../data/site';
+---
+<section id="how-it-works" class="border-y border-hair bg-surface py-16 lg:py-24">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div data-reveal class="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-20">
+      <div class="flex flex-col items-start gap-5">
+        <Eyebrow>How it works</Eyebrow>
+        <h2 class="text-4xl leading-[1.06] tracking-tight sm:text-5xl lg:text-[58px]">
+          3 steps to <span class="text-muted italic">technical freedom.</span>
+        </h2>
+      </div>
+      <p class="text-lg leading-relaxed text-muted">
+        From identifying bottlenecks to full technical freedom, with clear communication and dedicated execution at every stage.
+      </p>
+    </div>
+
+    <ol data-reveal-stagger class="relative mt-12 grid gap-5 lg:mt-16 lg:grid-cols-3">
+      <!-- Connector line behind the step markers (desktop) -->
+      <span class="absolute top-7 right-[16%] left-[16%] hidden h-px bg-[linear-gradient(90deg,transparent,var(--color-hair)_10%,var(--color-hair)_90%,transparent)] lg:block" aria-hidden="true"></span>
+      {steps.map((s, i) => (
+        <li class="relative grid grid-cols-[auto_1fr] gap-4 lg:flex lg:flex-col lg:items-center lg:gap-5 lg:text-center">
+          <!-- Vertical connector (mobile) -->
+          {i < steps.length - 1 && <span class="absolute top-12 bottom-[-20px] left-[21px] w-px bg-hair lg:hidden" aria-hidden="true"></span>}
+          <span class:list={[
+            'relative z-10 flex size-11 items-center justify-center rounded-full border font-serif text-lg lg:size-14 lg:text-xl',
+            i === 0 ? 'border-gold/50 bg-gold/10 text-gold' : 'border-hair bg-canvas text-ink',
+          ]}>{s.n}</span>
+          <div class="flex grow flex-col gap-3 rounded-3xl border border-hair bg-canvas p-6 sm:p-7 lg:items-center">
+            <span class="self-start rounded-full border border-hair px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-muted lg:self-center">{s.tag}</span>
+            <h3 class="text-[26px] tracking-tight sm:text-[28px]">{s.title}</h3>
+            <p class="leading-relaxed text-muted">{s.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <div class="mt-10 flex justify-center">
+      <Button href={BOOKING_URL} variant="solid" arrow>Start with step 1</Button>
+    </div>
+  </div>
+</section>
