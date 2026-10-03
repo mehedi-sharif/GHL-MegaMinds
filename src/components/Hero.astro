@@ -27,8 +27,8 @@ const c = hero.console;
       <dl class="mt-2 grid grid-cols-1 gap-6 border-t border-hair pt-7 sm:grid-cols-3 sm:gap-0">
         {hero.stats.map((s, i) => (
           <div class:list={['flex flex-col gap-1.5', i > 0 && 'sm:border-l sm:border-hair sm:pl-6', i < 2 && 'sm:pr-6']}>
-            <dt class="order-2 text-sm leading-snug text-muted">{s.label}</dt>
-            <dd class="order-1 font-serif text-4xl tracking-tight sm:text-[44px] sm:leading-none">{s.value}</dd>
+            <dt class="order-2 text-sm leading-snug text-muted">{s.text}</dt>
+            <dd class="order-1 font-serif text-4xl tracking-tight sm:text-[44px] sm:leading-none">{s.stat}</dd>
           </div>
         ))}
       </dl>

@@ -16,12 +16,12 @@ hero:
     label: View our services
     link: "#offers"
   stats:
-    - value: 10+ yrs
-      label: building software for global businesses
-    - value: < 48 hrs
-      label: from client sign-up to a fully integrated account
-    - value: 7-day
-      label: 100% money-back guarantee
+    - stat: 10+ yrs
+      text: building software for global businesses
+    - stat: < 48 hrs
+      text: from client sign-up to a fully integrated account
+    - stat: 7-day
+      text: 100% money-back guarantee
   console:
     kicker: NEW CLIENT · SUB-ACCOUNT
     title: Client onboarding & setup

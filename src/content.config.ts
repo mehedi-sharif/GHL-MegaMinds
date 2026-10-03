@@ -72,7 +72,7 @@ const homepage = defineCollection({
       ...section,
       primary_button: link,
       secondary_button: link,
-      stats: z.array(z.object({ value: z.string(), label: z.string() })),
+      stats: z.array(z.object({ stat: z.string(), text: z.string() })),
       console: z.object({
         kicker: z.string(),
         title: z.string(),
