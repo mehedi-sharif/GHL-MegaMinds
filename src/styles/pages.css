@@ -36,7 +36,6 @@
   & .dim { color: var(--dim); }
   & .grad {
     background-image: var(--brand); -webkit-background-clip: text; background-clip: text; color: transparent;
-    font-style: italic;
   }
   & .label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
   & .plus { font-family: var(--mono); color: var(--dim); letter-spacing: .25em; font-size: 12px; }

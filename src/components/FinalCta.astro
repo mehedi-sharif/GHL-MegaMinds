@@ -9,7 +9,7 @@ const { final_cta: cta } = await getHome();
   <div data-reveal class="mx-auto flex max-w-7xl flex-col items-center gap-6 rounded-[32px] border border-hair bg-deep px-6 py-16 text-center sm:px-12 lg:py-24">
     <Eyebrow>{cta.eyebrow}</Eyebrow>
     <h2 class="max-w-[980px] text-4xl leading-[1.04] tracking-tight sm:text-6xl lg:text-[68px]">
-      {cta.title} <span class="text-brand italic">{cta.title_highlight}</span>
+      {cta.title} <span class="text-brand">{cta.title_highlight}</span>
     </h2>
     <p class="max-w-[620px] text-lg leading-relaxed text-muted lg:text-[19px]">
       {cta.content}

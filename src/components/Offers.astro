@@ -9,7 +9,7 @@ const { offers } = await getHome();
     <div data-reveal class="flex flex-col items-center gap-5 text-center">
       <span class="flex h-9 items-center rounded-full border border-gold/40 bg-gold/10 px-4 text-sm font-semibold text-gold">{offers.badge}</span>
       <h2 class="text-5xl leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
-        {offers.title}<br /><span class="text-muted italic">{offers.title_highlight}</span>
+        {offers.title}<br /><span class="text-muted">{offers.title_highlight}</span>
       </h2>
       <p class="max-w-[620px] text-lg leading-relaxed text-muted lg:text-[19px]">
         {offers.content}
