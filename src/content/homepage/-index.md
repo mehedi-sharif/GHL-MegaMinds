@@ -7,8 +7,8 @@ hero:
   eyebrow: The HighLevel engineering partner
   title: You own the client
   title_highlight: We strengthen delivery
-  content: We gives agencies, SaaS resellers, and B2B providers an engineering
-    team behind the systems they sell, implement, and support.
+  content: We give agencies, SaaS resellers, and B2B providers an engineering team
+    behind the systems they sell, implement, and support.
   primary_button:
     label: Book a discovery call
     link: https://api.leadconnectorhq.com/widget/booking/b40dt1YgHIrDlJDWZd1D
