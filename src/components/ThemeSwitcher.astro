@@ -1,0 +1,38 @@
+---
+// System / Light / Dark switch. The choice is stored in localStorage and
+// applied by the theme script in Layout.astro (window.setTheme).
+const options = [
+  { value: 'system', label: 'System', icon: 'M4 5h16v11H4zM9 20h6M12 16v4' },
+  { value: 'light', label: 'Light', icon: 'M12 3v2M12 19v2M5 12H3M21 12h-2M6.3 6.3 4.9 4.9M19.1 19.1l-1.4-1.4M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z' },
+  { value: 'dark', label: 'Dark', icon: 'M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z' },
+];
+---
+<div role="radiogroup" aria-label="Colour theme" class="theme-switch inline-flex items-center gap-1 rounded-full border border-hair bg-tint/[0.03] p-1">
+  {options.map((o) => (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={o.value === 'system' ? 'true' : 'false'}
+      data-theme-option={o.value}
+      class="inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-[13px] font-medium text-muted transition hover:text-ink aria-checked:bg-card aria-checked:text-ink aria-checked:shadow-sm aria-checked:ring-1 aria-checked:ring-hair"
+    >
+      <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={o.icon} /></svg>
+      {o.label}
+    </button>
+  ))}
+</div>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-option]');
+  const sync = () => {
+    const pref = document.documentElement.dataset.themePref ?? 'system';
+    buttons.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.themeOption === pref)));
+  };
+  buttons.forEach((b) =>
+    b.addEventListener('click', () =>
+      (window as unknown as { setTheme: (p: string) => void }).setTheme(b.dataset.themeOption!),
+    ),
+  );
+  new MutationObserver(sync).observe(document.documentElement, { attributeFilter: ['data-theme-pref'] });
+  sync();
+</script>

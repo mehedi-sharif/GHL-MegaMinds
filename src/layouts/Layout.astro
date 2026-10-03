@@ -29,6 +29,25 @@ const ogImage = hasPublicFile(ogPath) ? new URL(ogPath, Astro.site) : undefined;
     })(window,document,'script','dataLayer','GTM-WV2CRCZ7');</script>
     <!-- End Google Tag Manager -->
     <script is:inline>document.documentElement.classList.add('js');</script>
+    <!-- Theme: "light" | "dark" | "system" (default), chosen in the footer.
+         Runs before paint so the page never flashes the wrong theme. -->
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const media = matchMedia('(prefers-color-scheme: light)');
+        const pref = () => { try { return localStorage.getItem('theme') || 'system'; } catch { return 'system'; } };
+        const apply = (p = pref()) => {
+          const theme = p === 'system' ? (media.matches ? 'light' : 'dark') : p;
+          root.dataset.theme = theme;
+          root.dataset.themePref = p;
+          document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#ffffff' : '#08090d');
+        };
+        window.setTheme = (p) => { try { localStorage.setItem('theme', p); } catch {} apply(p); };
+        media.addEventListener('change', () => pref() === 'system' && apply());
+        apply();
+        addEventListener('DOMContentLoaded', () => apply());
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />

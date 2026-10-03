@@ -1,6 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import Button from './Button.astro';
+import ThemeSwitcher from './ThemeSwitcher.astro';
 import { BOOKING_URL, trust } from '../data/site';
 
 const columns = [
@@ -71,15 +72,18 @@ const year = new Date().getFullYear();
         <p>© {year} GHL Megaminds. All rights reserved.</p>
         {legal.map((l) => <a href={l.href} class="transition hover:text-ink">{l.label}</a>)}
       </div>
-      <a href="#" class="inline-flex items-center gap-1.5 transition hover:text-ink">
-        Back to top
-        <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>
-      </a>
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-4">
+        <ThemeSwitcher />
+        <a href="#" class="inline-flex items-center gap-1.5 transition hover:text-ink">
+          Back to top
+          <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>
+        </a>
+      </div>
     </div>
   </div>
 
   <!-- Oversized wordmark -->
-  <p class="pointer-events-none -mb-[0.22em] select-none text-center font-serif text-[18vw] leading-none tracking-[-0.04em] text-white/[0.035] lg:text-[15vw]" aria-hidden="true">
+  <p class="pointer-events-none -mb-[0.22em] select-none text-center font-serif text-[18vw] leading-none tracking-[-0.04em] text-tint/[0.045] lg:text-[15vw]" aria-hidden="true">
     Megaminds
   </p>
 </footer>

@@ -6,7 +6,7 @@
 
 .v1 {
   --line: var(--color-hair);
-  --line2: #3d4257;
+  --line2: color-mix(in oklab, var(--color-hair), var(--color-ink) 15%);
   --card2: var(--color-surface);
   --bg2: var(--color-surface);
   --muted: var(--color-muted);
@@ -14,6 +14,7 @@
   --ink: var(--color-ink);
   --accent: var(--color-gold);
   --brand: linear-gradient(100deg, var(--color-gold), var(--color-green));
+  --brand-fill: linear-gradient(100deg, var(--brand-from), var(--brand-to));
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
   font-size: 16px;
@@ -48,8 +49,8 @@
     font-size: 15px; font-weight: 600; border-radius: 999px; border: 1px solid var(--line);
     color: var(--ink); transition: .18s; white-space: nowrap;
   }
-  & .btn:hover { border-color: var(--muted); background: rgb(255 255 255 / .05); }
-  & .btn.pri { background: var(--brand); color: var(--color-on-brand); border-color: transparent; }
+  & .btn:hover { border-color: var(--muted); background: color-mix(in oklab, var(--color-tint) 5%, transparent); }
+  & .btn.pri { background: var(--brand-fill); color: var(--color-on-brand); border-color: transparent; }
   & .btn.pri:hover { filter: brightness(1.1); }
   & .btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 34px; }
 
@@ -113,14 +114,14 @@
   & ul.ticks { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 10px; }
   & ul.ticks li { position: relative; padding-left: 22px; color: var(--muted); font-size: 14.5px; }
   & ul.ticks li::before {
-    content: ""; position: absolute; left: 0; top: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand);
+    content: ""; position: absolute; left: 0; top: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-fill);
   }
 
   /* ---------- pricing ---------- */
   & .price { background: var(--color-card); border: 1px solid var(--line); border-radius: 20px; padding: 30px; display: flex; flex-direction: column; position: relative; }
   & .price.best { border-color: var(--accent); box-shadow: 0 30px 80px -40px rgb(252 192 0 / .35); }
   & .tag {
-    position: absolute; top: -11px; left: 28px; background: var(--brand); color: var(--color-on-brand); font-size: 10.5px;
+    position: absolute; top: -11px; left: 28px; background: var(--brand-fill); color: var(--color-on-brand); font-size: 10.5px;
     font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px;
   }
   & .price .pname { font-size: 14.5px; font-weight: 600; }
@@ -234,7 +235,7 @@
   & .flowhead { text-align: center; margin-bottom: clamp(38px, 6vh, 66px); }
   & .flowhead .pillhead {
     display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--muted); border: 1px solid var(--line); background: rgb(255 255 255 / .03); border-radius: 999px; padding: 7px 15px;
+    color: var(--muted); border: 1px solid var(--line); background: color-mix(in oklab, var(--color-tint) 3%, transparent); border-radius: 999px; padding: 7px 15px;
   }
   & .flowhead h2 { margin-top: 18px; }
   & .flowhead p { color: var(--muted); margin: 16px auto 0; max-width: 52ch; font-size: 15.5px; }
@@ -251,7 +252,7 @@
     width: 76px; height: 76px; border-radius: 50%; background: var(--color-card); border: 1px solid var(--line);
     display: flex; align-items: center; justify-content: center; color: var(--accent); transition: .18s;
   }
-  & .flowstep:hover .flowicon { background: var(--brand); color: var(--color-on-brand); border-color: transparent; }
+  & .flowstep:hover .flowicon { background: var(--brand-fill); color: var(--color-on-brand); border-color: transparent; }
   & .flowicon svg { width: 30px; height: 30px; }
   & .flowstep h4 { margin-top: 22px; }
   & .flowstep p { color: var(--muted); font-size: 14.5px; margin-top: 10px; max-width: 30ch; }

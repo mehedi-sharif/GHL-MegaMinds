@@ -14,14 +14,56 @@
   --color-green: #00cc00;
   --color-blue: #0090fc;
   --color-on-brand: #08090d; /* text on gold/green */
+  --color-tint: #ffffff;     /* subtle overlays: white on dark, black on light */
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Newsreader", Georgia, serif;
 }
 
+/* Light theme. The theme switcher in the footer sets data-theme on <html>
+   ("light" | "dark"); "system" resolves to one of them via a head script.
+   Without JS the OS preference applies. Gold and green are darkened so they
+   stay readable as text on white; the brand fill keeps the bright pair. */
+:root {
+  --brand-from: #fcc000;
+  --brand-to: #00cc00;
+}
+:root[data-theme="light"] {
+  --color-canvas: #ffffff;
+  --color-deep: #f3f4f7;
+  --color-surface: #f7f8fa;
+  --color-card: #ffffff;
+  --color-hair: #e1e4ec;
+  --color-ink: #0d0f16;
+  --color-muted: #555b6e;
+  --color-dim: #6a7084;
+  --color-gold: #a97b00;
+  --color-green: #007f00;
+  --color-blue: #0071c7;
+  --color-tint: #0d0f16;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --color-canvas: #ffffff;
+    --color-deep: #f3f4f7;
+    --color-surface: #f7f8fa;
+    --color-card: #ffffff;
+    --color-hair: #e1e4ec;
+    --color-ink: #0d0f16;
+    --color-muted: #555b6e;
+    --color-dim: #6a7084;
+    --color-gold: #a97b00;
+    --color-green: #007f00;
+    --color-blue: #0071c7;
+    --color-tint: #0d0f16;
+    color-scheme: light;
+  }
+}
+
 /* Brand gradient fill (buttons, badges) */
 @utility bg-brand {
-  background-image: linear-gradient(100deg, var(--color-gold), var(--color-green));
+  background-image: linear-gradient(100deg, var(--brand-from), var(--brand-to));
 }
 
 /* Brand gradient text (highlighted words in headings) */
