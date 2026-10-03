@@ -1,24 +1,26 @@
 ---
 import Eyebrow from './Eyebrow.astro';
-import { team } from '../data/site';
+import { getHome } from '../data/site';
 import { hasPublicFile, initials } from '../lib/assets';
+
+const { team } = await getHome();
 ---
 <section id="team" class="py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div data-reveal class="grid gap-8 lg:grid-cols-2 lg:items-end lg:gap-20">
       <div class="flex flex-col items-start gap-5">
-        <Eyebrow>Meet the team</Eyebrow>
+        <Eyebrow>{team.eyebrow}</Eyebrow>
         <h2 class="text-4xl leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">
-          You're in <span class="text-muted italic">experienced hands.</span>
+          {team.title} <span class="text-muted italic">{team.title_highlight}</span>
         </h2>
       </div>
       <p class="text-lg leading-relaxed text-muted lg:text-[19px]">
-        Your client accounts are configured by certified admins, extended by software engineers, and launched by technical builders and marketers.
+        {team.content}
       </p>
     </div>
 
     <div data-reveal-stagger class="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3">
-      {team.map((m) => (
+      {team.members.map((m) => (
         <article class="flex flex-col gap-5">
           <div class="relative h-[400px] overflow-hidden rounded-3xl border border-hair bg-card">
             {hasPublicFile(m.photo) ? (

@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import Button from './Button.astro';
-import { nav, BOOKING_URL } from '../data/site';
+import { nav, BOOKING_URL, site } from '../data/site';
 ---
 <header id="site-header" class="group sticky top-0 z-40 border-b border-transparent bg-canvas/60 backdrop-blur-md transition-[background-color,border-color] duration-300 data-scrolled:border-hair data-scrolled:bg-canvas/85">
   <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 transition-[height] duration-300 sm:px-6 lg:h-[84px] lg:px-8 lg:group-data-scrolled:h-[68px]">
@@ -14,7 +14,7 @@ import { nav, BOOKING_URL } from '../data/site';
     </nav>
 
     <div class="hidden lg:block">
-      <Button href={BOOKING_URL} variant="solid" arrow>Book a discovery call</Button>
+      <Button href={BOOKING_URL} variant="solid" arrow>{site.header_button}</Button>
     </div>
 
     <!-- Mobile menu -->
@@ -36,7 +36,7 @@ import { nav, BOOKING_URL } from '../data/site';
         <a href={item.href} class="border-b border-hair py-4 text-lg font-medium text-ink">{item.label}</a>
       ))}
     </nav>
-    <Button href={BOOKING_URL} class="mt-4 w-full" arrow>Book a discovery call</Button>
+    <Button href={BOOKING_URL} class="mt-4 w-full" arrow>{site.header_button}</Button>
   </div>
 </header>
 

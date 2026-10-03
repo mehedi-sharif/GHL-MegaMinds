@@ -2,7 +2,17 @@
   "content": "src/content",
   "media": "public/images",
   "public": "public",
-  "configs": [],
+  "configs": ["src/config"],
   "custom-commit": false,
-  "arrangement": []
+  "arrangement": [
+    { "id": "head-pages", "type": "heading", "targetPath": "", "groupName": "Pages" },
+    { "id": "file-home", "type": "file", "targetPath": "src/content/homepage/-index.md", "groupName": "Homepage" },
+    { "id": "file-about", "type": "file", "targetPath": "src/content/about/-index.md", "groupName": "About" },
+    { "id": "file-contact", "type": "file", "targetPath": "src/content/contact/-index.md", "groupName": "Contact" },
+    { "id": "grp-pages", "type": "folder", "targetPath": "src/content/pages", "groupName": "Other Pages", "include": "*.md", "exclude": "" },
+    { "id": "head-content", "type": "heading", "targetPath": "", "groupName": "Content" },
+    { "id": "grp-case-studies", "type": "folder", "targetPath": "src/content/case-studies", "groupName": "Case Studies", "include": "*.md", "exclude": "" },
+    { "id": "grp-blog", "type": "folder", "targetPath": "src/content/blog", "groupName": "Blog Posts", "include": "*.md", "exclude": "" },
+    { "id": "grp-authors", "type": "folder", "targetPath": "src/content/authors", "groupName": "Authors", "include": "*.md", "exclude": "" }
+  ]
 }

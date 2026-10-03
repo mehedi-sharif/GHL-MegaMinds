@@ -1,0 +1,131 @@
+{
+  "booking_url": "https://api.leadconnectorhq.com/widget/booking/b40dt1YgHIrDlJDWZd1D",
+  "nav": [
+    {
+      "label": "Services",
+      "href": "/#offers"
+    },
+    {
+      "label": "How we work",
+      "href": "/#how-it-works"
+    },
+    {
+      "label": "Projects",
+      "href": "/#projects"
+    },
+    {
+      "label": "Team",
+      "href": "/#team"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact"
+    }
+  ],
+  "header_button": "Book a discovery call",
+  "footer": {
+    "description": "White-label HighLevel support by certified admins and software engineers.",
+    "button": "Book a discovery call",
+    "columns": [
+      {
+        "title": "Services",
+        "links": [
+          {
+            "label": "Client Onboarding & Setup",
+            "href": "/#offers"
+          },
+          {
+            "label": "Ongoing Tech Support",
+            "href": "/#offers"
+          },
+          {
+            "label": "Custom App & Wrapper Dev",
+            "href": "/#offers"
+          }
+        ]
+      },
+      {
+        "title": "Solutions",
+        "links": [
+          {
+            "label": "For Business Owners",
+            "href": "/business-owners"
+          },
+          {
+            "label": "For Resellers",
+            "href": "/resellers"
+          },
+          {
+            "label": "Case Studies",
+            "href": "/case-studies"
+          },
+          {
+            "label": "Apps & Tools",
+            "href": "/tools"
+          }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          {
+            "label": "About",
+            "href": "/about"
+          },
+          {
+            "label": "Why us",
+            "href": "/#why-us"
+          },
+          {
+            "label": "How it works",
+            "href": "/#how-it-works"
+          },
+          {
+            "label": "Projects",
+            "href": "/#projects"
+          },
+          {
+            "label": "Team",
+            "href": "/#team"
+          },
+          {
+            "label": "Blog",
+            "href": "/blog"
+          },
+          {
+            "label": "Contact",
+            "href": "/contact"
+          }
+        ]
+      }
+    ],
+    "legal": [
+      {
+        "label": "Privacy Policy",
+        "href": "/privacy"
+      },
+      {
+        "label": "Terms of Service",
+        "href": "/terms"
+      }
+    ],
+    "copyright": "GHL Megaminds. All rights reserved."
+  },
+  "trust": [
+    "30 Minute Discovery Call",
+    "7-Day Money-Back Guarantee",
+    "No Long-Term Lock-in"
+  ],
+  "contact_form": {
+    "webhookUrl": "",
+    "id": "Fognmtp89XFcCAgplgVJ",
+    "name": "Discovery Call - White Label Partnership",
+    "host": "https://links.ghlmegaminds.com",
+    "height": 472
+  },
+  "booking_calendar": {
+    "id": "b40dt1YgHIrDlJDWZd1D",
+    "iframeId": "b40dt1YgHIrDlJDWZd1D_1790652759354",
+    "host": "https://links.ghlmegaminds.com"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "file": "src/content/blog/first-five-things-new-account.md",
+  "name": "blog",
+  "fileType": "md",
+  "fmType": "yaml",
+  "template": [
+    { "name": "title", "label": "Title", "type": "string", "value": "", "isRequired": true },
+    { "name": "meta_title", "label": "Meta Title", "type": "string", "value": "", "description": "Browser tab / search result title. Leave empty to use the title." },
+    { "name": "description", "label": "Description", "type": "string", "value": "", "description": "One-sentence summary shown in post lists and search results." },
+    { "name": "date", "label": "Date", "type": "Date", "value": "", "alwaysUseCurrentDate": false, "isRequired": true },
+    { "name": "authors", "label": "Authors", "type": "Array", "subType": "string", "value": [], "isDropdown": true, "referenceType": "folder", "referencePath": "src/content/authors", "referenceInclude": "*.md", "referenceExclude": "-index.md", "referenceField": "title" },
+    { "name": "categories", "label": "Categories", "type": "Array", "subType": "string", "value": [] },
+    { "name": "tags", "label": "Tags", "type": "Array", "subType": "string", "value": [] },
+    { "name": "draft", "label": "Draft", "type": "boolean", "value": false }
+  ]
+}

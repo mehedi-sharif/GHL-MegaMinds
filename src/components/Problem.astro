@@ -1,27 +1,29 @@
 ---
 import Eyebrow from './Eyebrow.astro';
-import { problems, advantages } from '../data/site';
+import { getHome } from '../data/site';
+
+const { problem } = await getHome();
 ---
 <section id="why-us" class="py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div data-reveal class="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-20">
       <div class="flex flex-col items-start gap-5">
-        <Eyebrow>The problem</Eyebrow>
+        <Eyebrow>{problem.eyebrow}</Eyebrow>
         <h2 class="text-4xl leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">
-          Stop wasting time babysitting VAs or <span class="text-muted italic">wrestling with complex tech.</span>
+          {problem.title} <span class="text-muted italic">{problem.title_highlight}</span>
         </h2>
       </div>
       <p class="text-lg leading-relaxed text-muted lg:text-[19px]">
-        You started your agency to build a scalable business, acquire high-ticket clients, and generate revenue. You did not start it to spend hours fixing broken workflows or micro-managing inexperienced virtual assistants.
+        {problem.content}
       </p>
     </div>
 
     <!-- Comparison: the usual options vs. us -->
     <div data-reveal-stagger class="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-[1.15fr_1fr]">
       <div class="flex flex-col rounded-3xl border border-hair bg-surface p-6 sm:p-8">
-        <p class="text-xs font-semibold uppercase tracking-widest text-muted">The usual options</p>
+        <p class="text-xs font-semibold uppercase tracking-widest text-muted">{problem.options_label}</p>
         <ul class="mt-2 flex flex-col">
-          {problems.map((p) => (
+          {problem.options.map((p) => (
             <li class="flex gap-4 border-b border-hair py-6 last:border-b-0 last:pb-0">
               <span class="mt-1 flex size-7 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-300/90">
                 <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
@@ -40,10 +42,10 @@ import { problems, advantages } from '../data/site';
 
       <div class="relative flex flex-col overflow-hidden rounded-3xl border border-gold/35 bg-card p-6 sm:p-8">
         <div class="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-[radial-gradient(closest-side,rgba(252,192,0,0.12),transparent)]" aria-hidden="true"></div>
-        <p class="relative text-xs font-semibold uppercase tracking-widest text-gold">GHL Megaminds</p>
-        <h3 class="relative mt-3 text-3xl leading-tight tracking-tight sm:text-4xl">A certified team that works like your own.</h3>
+        <p class="relative text-xs font-semibold uppercase tracking-widest text-gold">{problem.us_label}</p>
+        <h3 class="relative mt-3 text-3xl leading-tight tracking-tight sm:text-4xl">{problem.us_title}</h3>
         <ul class="relative mt-6 flex grow flex-col gap-4">
-          {advantages.map((a) => (
+          {problem.advantages.map((a) => (
             <li class="flex items-start gap-3.5">
               <span class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-green/15 text-green">
                 <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
@@ -52,8 +54,8 @@ import { problems, advantages } from '../data/site';
             </li>
           ))}
         </ul>
-        <a href="#offers" class="relative mt-8 inline-flex items-center gap-2 self-start text-[15px] font-semibold text-gold hover:underline">
-          See what's included <span aria-hidden="true">→</span>
+        <a href={problem.link.link} class="relative mt-8 inline-flex items-center gap-2 self-start text-[15px] font-semibold text-gold hover:underline">
+          {problem.link.label} <span aria-hidden="true">→</span>
         </a>
       </div>
     </div>

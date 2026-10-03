@@ -6,14 +6,14 @@ import Eyebrow from '../components/Eyebrow.astro';
 import Button from '../components/Button.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { BOOKING_URL, bookingCalendar as cal, contactForm as form } from '../data/site';
+import { getEntry } from 'astro:content';
+
+const page = (await getEntry('contact', '-index'))!.data;
 
 const formSrc = !form.webhookUrl && form.id && `${form.host}/widget/form/${form.id}`;
 const calendarSrc = `${cal.host}/widget/booking/${cal.id}`;
 ---
-<Layout
-  title="Contact | GHL Megaminds"
-  description="Tell us about your HighLevel agency. Certified admins and software engineers for onboarding, support, and custom GHL development."
->
+<Layout title={page.meta_title ?? `${page.title} | GHL Megaminds`} description={page.description}>
   <Header />
   <main id="main-content" class="relative overflow-hidden">
     <div class="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[1100px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(252,192,0,0.08),transparent)]" aria-hidden="true"></div>
@@ -21,16 +21,16 @@ const calendarSrc = `${cal.host}/widget/booking/${cal.id}`;
     <section class="relative mx-auto grid max-w-7xl gap-12 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-16 lg:px-8 lg:pt-24 lg:pb-28">
       <!-- Intro + contact form -->
       <div class="flex min-w-0 flex-col gap-7">
-        <Eyebrow class="self-start">Contact</Eyebrow>
+        <Eyebrow class="self-start">{page.eyebrow}</Eyebrow>
         <h1 class="text-5xl leading-[1.02] tracking-[-0.03em] sm:text-6xl lg:text-[64px]">
-          Let's talk about <span class="text-muted italic">your agency.</span>
+          {page.heading} <span class="text-muted italic">{page.heading_highlight}</span>
         </h1>
         <p class="max-w-[520px] text-lg leading-relaxed text-muted">
-          Tell us where you're stuck (onboarding, daily support, or a custom build) and we'll come back with a clear plan.
+          {page.content}
         </p>
 
         <div class="flex flex-col gap-4 border-t border-hair pt-7">
-          <p class="text-xs font-semibold uppercase tracking-widest text-muted">What happens next</p>
+          <p class="text-xs font-semibold uppercase tracking-widest text-muted">{page.form_label}</p>
           <div class="rounded-[28px] border border-hair bg-card p-2 sm:p-3">
             {form.webhookUrl ? (
               <ContactForm webhookUrl={form.webhookUrl} />
@@ -57,8 +57,8 @@ const calendarSrc = `${cal.host}/widget/booking/${cal.id}`;
               ></iframe>
             ) : (
               <div class="flex flex-col items-center gap-4 rounded-[20px] bg-surface px-6 py-10 text-center">
-                <p class="leading-relaxed text-muted">Prefer to talk it through? Book a time on the calendar.</p>
-                <Button href={BOOKING_URL} arrow>Book a discovery call</Button>
+                <p class="leading-relaxed text-muted">{page.fallback_text}</p>
+                <Button href={BOOKING_URL} arrow>{page.fallback_button}</Button>
               </div>
             )}
           </div>
@@ -73,7 +73,7 @@ const calendarSrc = `${cal.host}/widget/booking/${cal.id}`;
           style="width:100%;border:none;overflow:hidden;border-radius:20px"
           scrolling="no"
           id={cal.iframeId}
-          title="Book a discovery call"
+          title={page.calendar_title}
           class="block min-h-[640px]"
         ></iframe>
       </div>

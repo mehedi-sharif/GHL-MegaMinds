@@ -1,0 +1,27 @@
+{
+  "file": "src/content/case-studies/coach-cut-admin-time.md",
+  "name": "case-studies",
+  "fileType": "md",
+  "fmType": "yaml",
+  "template": [
+    { "name": "title", "label": "Title", "type": "string", "value": "", "isRequired": true },
+    { "name": "meta_title", "label": "Meta Title", "type": "string", "value": "" },
+    { "name": "description", "label": "Description", "type": "string", "value": "" },
+    { "name": "draft", "label": "Draft", "type": "boolean", "value": false },
+    { "name": "order", "label": "Order", "type": "number", "value": 99, "description": "Position on the case studies page." },
+    { "name": "num", "label": "Number", "type": "string", "value": "", "isRequired": true, "description": "e.g. CS/05" },
+    { "name": "kind", "label": "Kind", "type": "string", "value": "", "isRequired": true, "description": "e.g. Home services / Business owner" },
+    { "name": "summary", "label": "Summary", "type": "string", "value": "", "isRequired": true, "description": "Card text on the case studies page." },
+    { "name": "panel_label", "label": "Tile Label", "type": "string", "value": "", "isRequired": true },
+    { "name": "panel_bg", "label": "Tile Background", "type": "color", "value": "#E4F3C2", "isRequired": true },
+    { "name": "panel_ink", "label": "Tile Text Colour", "type": "color", "value": "#2C4400", "isRequired": true },
+    { "name": "wide", "label": "Wide Tile", "type": "boolean", "value": false },
+    {
+      "name": "results", "label": "Results", "type": "Array", "subType": "object", "value": [],
+      "fields": [
+        { "name": "value", "label": "Value", "type": "string", "value": "" },
+        { "name": "label", "label": "Label", "type": "string", "value": "" }
+      ]
+    }
+  ]
+}

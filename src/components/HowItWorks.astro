@@ -1,19 +1,22 @@
 ---
 import Eyebrow from './Eyebrow.astro';
 import Button from './Button.astro';
-import { BOOKING_URL, steps } from '../data/site';
+import { getHome } from '../data/site';
+
+const { how_it_works: how } = await getHome();
+const { steps } = how;
 ---
 <section id="how-it-works" class="border-y border-hair bg-surface py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div data-reveal class="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-20">
       <div class="flex flex-col items-start gap-5">
-        <Eyebrow>How it works</Eyebrow>
+        <Eyebrow>{how.eyebrow}</Eyebrow>
         <h2 class="text-4xl leading-[1.06] tracking-tight sm:text-5xl lg:text-[58px]">
-          3 steps to <span class="text-muted italic">technical freedom.</span>
+          {how.title} <span class="text-muted italic">{how.title_highlight}</span>
         </h2>
       </div>
       <p class="text-lg leading-relaxed text-muted">
-        From identifying bottlenecks to full technical freedom, with clear communication and dedicated execution at every stage.
+        {how.content}
       </p>
     </div>
 
@@ -38,7 +41,7 @@ import { BOOKING_URL, steps } from '../data/site';
     </ol>
 
     <div class="mt-10 flex justify-center">
-      <Button href={BOOKING_URL} variant="solid" arrow>Start with step 1</Button>
+      <Button href={how.button.link} variant="solid" arrow>{how.button.label}</Button>
     </div>
   </div>
 </section>

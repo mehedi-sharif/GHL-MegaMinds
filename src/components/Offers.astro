@@ -1,21 +1,23 @@
 ---
 import Button from './Button.astro';
-import { BOOKING_URL, offers } from '../data/site';
+import { BOOKING_URL, getHome } from '../data/site';
+
+const { offers } = await getHome();
 ---
 <section id="offers" class="bg-deep py-16 lg:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div data-reveal class="flex flex-col items-center gap-5 text-center">
-      <span class="flex h-9 items-center rounded-full border border-gold/40 bg-gold/10 px-4 text-sm font-semibold text-gold">Launch offer · 40% off</span>
+      <span class="flex h-9 items-center rounded-full border border-gold/40 bg-gold/10 px-4 text-sm font-semibold text-gold">{offers.badge}</span>
       <h2 class="text-5xl leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
-        Offload the tech.<br /><span class="text-muted italic">Keep the margins.</span>
+        {offers.title}<br /><span class="text-muted italic">{offers.title_highlight}</span>
       </h2>
       <p class="max-w-[620px] text-lg leading-relaxed text-muted lg:text-[19px]">
-        Plug certified HighLevel specialists and full-stack devs into your agency starting tomorrow.
+        {offers.content}
       </p>
     </div>
 
     <div data-reveal-stagger class="mt-12 grid gap-6 lg:mt-14 lg:grid-cols-3">
-      {offers.map((o) => (
+      {offers.plans.map((o) => (
         <article class:list={[
           'relative flex min-w-0 flex-col gap-6 rounded-[28px] border p-6 sm:p-8 lg:p-9',
           o.featured
@@ -51,7 +53,7 @@ import { BOOKING_URL, offers } from '../data/site';
             ))}
           </ul>
 
-          <Button href={BOOKING_URL} variant={o.featured ? 'brand' : 'outline'} class="w-full">Book a discovery call</Button>
+          <Button href={BOOKING_URL} variant={o.featured ? 'brand' : 'outline'} class="w-full">{offers.button_label}</Button>
         </article>
       ))}
     </div>
@@ -61,9 +63,9 @@ import { BOOKING_URL, offers } from '../data/site';
       <div class="mx-auto mb-5 flex size-14 items-center justify-center rounded-full bg-green/12 text-green ring-1 ring-green/30">
         <svg class="size-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
       </div>
-      <h3 class="mb-3 text-2xl sm:text-3xl">7-Day 100% Money-Back Guarantee</h3>
+      <h3 class="mb-3 text-2xl sm:text-3xl">{offers.guarantee.title}</h3>
       <p class="mx-auto max-w-2xl leading-relaxed text-muted">
-        If you feel we cannot deliver the quality, speed, and technical precision we promise within your first 7 days, you get a full refund. No questions asked.
+        {offers.guarantee.content}
       </p>
     </div>
   </div>

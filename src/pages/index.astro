@@ -13,8 +13,11 @@ import HowItWorks from '../components/HowItWorks.astro';
 import Projects from '../components/Projects.astro';
 import FinalCta from '../components/FinalCta.astro';
 import Footer from '../components/Footer.astro';
+import { getHome } from '../data/site';
+
+const home = await getHome();
 ---
-<Layout>
+<Layout title={home.meta_title} description={home.description}>
   <Header />
   <main id="main-content">
     <Hero />

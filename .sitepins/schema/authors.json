@@ -1,0 +1,24 @@
+{
+  "file": "src/content/authors/mehedi-sharif.md",
+  "name": "authors",
+  "fileType": "md",
+  "fmType": "yaml",
+  "template": [
+    { "name": "title", "label": "Name", "type": "string", "value": "", "isRequired": true },
+    { "name": "meta_title", "label": "Meta Title", "type": "string", "value": "" },
+    { "name": "description", "label": "Description", "type": "string", "value": "" },
+    { "name": "image", "label": "Photo", "type": "media", "value": "" },
+    { "name": "role", "label": "Role", "type": "string", "value": "" },
+    { "name": "order", "label": "Order", "type": "number", "value": 99, "description": "Lower numbers are listed first." },
+    {
+      "name": "social", "label": "Social Links", "type": "Array", "subType": "object", "value": [],
+      "description": "Only links starting with http(s) are shown.",
+      "fields": [
+        { "name": "name", "label": "Name", "type": "string", "value": "" },
+        { "name": "icon", "label": "Icon", "type": "string", "value": "" },
+        { "name": "link", "label": "Link", "type": "string", "value": "" }
+      ]
+    },
+    { "name": "draft", "label": "Draft", "type": "boolean", "value": false }
+  ]
+}

@@ -1,18 +1,19 @@
 ---
-// Numbers are derived from site data so they stay accurate as projects/team change.
-import { projects, team } from '../data/site';
+// Numbers are derived from the homepage content so they stay accurate as projects/team change.
+import { getHome } from '../data/site';
 
-const installs = projects.reduce((sum, p) => sum + (p.downloads ?? 0), 0);
-const shipped = projects.filter((p) => !p.comingSoon).length;
-const marketplaceApps = projects.filter((p) => p.downloads !== undefined).length;
-const years = team.reduce((sum, m) => sum + parseInt(m.years), 0);
-const certified = team.filter((m) => m.certified).length;
+const { proof, projects, team } = await getHome();
+const installs = projects.items.reduce((sum, p) => sum + p.downloads, 0);
+const shipped = projects.items.filter((p) => !p.coming_soon).length;
+const marketplaceApps = projects.items.filter((p) => p.downloads > 0).length;
+const years = team.members.reduce((sum, m) => sum + parseInt(m.years), 0);
+const certified = team.members.filter((m) => m.certified).length;
 
 const stats = [
-  { value: `${installs}`, label: 'installs of our GHL Marketplace apps' },
-  { value: `${marketplaceApps}`, label: 'custom apps live on the Marketplace' },
-  { value: `${shipped}`, label: 'products shipped for HighLevel agencies' },
-  { value: `${years}+ yrs`, label: `combined engineering experience, ${certified} certified admins` },
+  { value: `${installs}`, label: proof.installs_label },
+  { value: `${marketplaceApps}`, label: proof.apps_label },
+  { value: `${shipped}`, label: proof.shipped_label },
+  { value: `${years}+ yrs`, label: proof.experience_label.replace('{certified}', String(certified)) },
 ];
 ---
 <section aria-label="Track record" class="border-y border-hair">
