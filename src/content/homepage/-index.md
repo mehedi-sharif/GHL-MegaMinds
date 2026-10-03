@@ -16,12 +16,12 @@ hero:
     label: View our services
     link: "#offers"
   stats:
-    - stat: 10+ yrs
-      text: building software for global businesses
-    - stat: < 48 hrs
-      text: from client sign-up to a fully integrated account
-    - stat: 7-day
-      text: 100% money-back guarantee
+    - stat: Certified Admins
+      text: HighLevel expertise with full-stack depth.
+    - stat: 30+ years
+      text: Combined development experience.
+    - stat: One engineering bench
+      text: Architecture, build, QA, and support.
   console:
     kicker: NEW CLIENT · SUB-ACCOUNT
     title: Client onboarding & setup
